@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use or build on this work, please cite it as below."
+title: "The Clean Two-Query Threshold for Unitary Synthesis"
+authors:
+  - family-names: "Douglas"
+    given-names: "Seth"
+version: 1.0.0
+date-released: 2026-09-11
+type: software
+repository-code: "https://github.com/Apsiape/two-query-unitary-synthesis"
+license: "CC-BY-4.0"
+keywords:
+  - quantum query complexity
+  - unitary synthesis
+  - Aaronson-Kuperberg problem
+  - Gaussian mean width
+  - matrix concentration
+  - Lean 4
+abstract: >-
+  A tight characterization of clean two-query unitary synthesis. Lower bound: for any
+  fixed two-query architecture with arbitrary contractions and independent unimodular
+  phase selectors, the Gaussian mean width of the realizable family is at most
+  2 min(N,Q) sqrt(log 2Q), so universal clean two-query synthesis of n-qubit unitaries
+  needs Omega(2^n) qubits and, by an address-compression lemma, Omega(2^n) oracle input
+  bits regardless of workspace. Upper bound: a permutation-transport construction
+  implements every unitary cleanly with two Boolean queries to one table,
+  O(2^n log(1/eps)) qubits and address bits. Both thresholds are Theta(2^n) up to
+  log(1/eps). The bound is tight in both factors at polynomial workspace; the one-query
+  argument provably cannot be iterated; and the garbage-model two-query problem is shown
+  to be exactly a clean four-insertion width problem, which remains open. Eight
+  deterministic verifiers and a kernel-checked Lean spine accompany the paper.
