@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.0.2 — 2026-09-11
+
+Referee pass on the compiled LaTeX paper (no mathematical defects found). Notation made
+one-to-one: capacity constant $`\kappa`$, quantizer levels $`J`$, Section 7 workspace
+dimension $`k`$, transport cell map $`\theta`$, labels $`\alpha,\beta`$, coupling $`\Xi`$.
+Wording: junk-blindness restricted to linear width arguments; Theorem 6.3 error tolerance;
+Corollary 6.5 "below an absolute constant"; Meckes theorem number; repository URL in the
+paper. Section 8: any $`N\cdot\mathrm{poly}(k,\log Q)`$ width bound suffices for the
+negative answer, and Theorem 7.2 carries it to the garbage model. Markdown and LaTeX
+brought into exact agreement (Section 8 consistency checks, citation keys).
+
 ## 1.0.1 — 2026-09-11
 
 Fixes from the five-lane refutation-first audit of 1.0.0 (details in `STATUS.md`, "Audit
@@ -25,6 +36,8 @@ round of 2026-09-11"). No theorem was found false.
   junk-blindness; two-decomposition compression; linter rejects tab bytes.
 - Wording: "exactly", "nothing was known", "for every oracle" and similar overclaims
   removed from the abstract, introduction and README.
+- LaTeX source `paper/paper.tex` and compiled `paper/paper.pdf` added, with the same
+  content and numbering as the markdown.
 
 ## 1.0.0 — 2026-09-11
 

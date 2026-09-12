@@ -2,11 +2,11 @@
 
 **Seth Douglas**
 
-*Version 1.0.1 — 2026-09-11*
+*Version 1.0.2 — 2026-09-11*
 
 > Every numbered claim below that admits a finite check is exercised by a script in `verify/`,
 > and `STATUS.md` records, claim by claim, which checks exist, what has been independently
-> audited and what has not.
+> audited and what has not. The repository is <https://github.com/Apsiape/two-query-unitary-synthesis>.
 > Display and inline mathematics follow GitHub's renderer conventions.
 
 ---
@@ -25,7 +25,7 @@ error. Write $`N = 2^n`$.
 - **Width.** For any fixed two-query architecture $`T_{x,y} = B\,D_x\,W\,D_y\,C`$ with
   arbitrary contractions $`B, W, C`$ and independent unimodular phase selectors $`x, y`$, the
   Gaussian mean width of the realizable family is at most
-  $`2\min(N,Q)\sqrt{\log(2Q)}`$, where $`Q`$ is the dimension of the register the oracle acts
+  $`2\min(N,Q)\sqrt{\log 2Q}`$, where $`Q`$ is the dimension of the register the oracle acts
   on, ancillas included. The supremum over selectors is absorbed pointwise; no chaining is
   used.
 - **Lower bounds.** Consequently a universal clean two-query circuit needs
@@ -39,8 +39,8 @@ So the clean two-query qubit threshold and address-length threshold are both
 $`\Theta(2^n)`$ up to the factor $`\log(1/\varepsilon)`$. We also show that the bound is
 tight at workspace $`\Theta(N^2)`$, explain why the one-query argument does not extend, and
 prove a transfer theorem reducing the garbage-model two-query problem to a clean
-four-insertion width bound, which remains open; no junk-blind width argument can do with
-fewer insertions.
+four-insertion width bound, which remains open; no width argument that is linear in the
+realized operator and blind to the junk can do with fewer insertions.
 
 ---
 
@@ -269,7 +269,8 @@ w_2 \;:=\; \mathbb E_G\,\sup_{x,y\in\mathbb T^Q}\bigl|\mathrm{Tr}(G^{*}T_{x,y})\
 
    > The inequality of this step is not new. It is the diagonal-scaling relaxation of
    > quadratic maximization over the cube and the torus that runs from Delorme–Poljak and
-   > Poljak–Rendl through Nesterov, Alon–Naor and Charikar–Wirth; the degree-$`t`$ structure
+   > Poljak–Rendl through Nesterov, Alon–Naor and Charikar–Wirth [DP93, PR95, Nes98, AN06,
+   > CW04]; the degree-$`t`$ structure
    > is the polynomial method [BBCMW98], of which [AK07, Thm 6.7] is the $`t=1`$ case. What is
    > ours is the composition: polynomial method, then this relaxation, then matrix
    > concentration, then Sudakov, run against a synthesis architecture, and the variance
@@ -313,8 +314,8 @@ w_2 \;:=\; \mathbb E_G\,\sup_{x,y\in\mathbb T^Q}\bigl|\mathrm{Tr}(G^{*}T_{x,y})\
    [Tro15, Thm 4.1.1]. Splitting each complex Gaussian into real and imaginary parts of
    variance $`1/2`$ gives two real series with variance parameter $`v/2\le1/2`$, hence
    $`\mathbb E\|K\|\le2\sqrt{\log(2Q)}`$ by the triangle inequality. (Treating the two
-   parts as one real series of $`2N^2`$ terms gives the sharper $`\sqrt2`$; the constant 2
-   is what the verifier tests and all that is needed.) Assemble with step 3. $`\square`$
+   parts as one real series of $`2N^2`$ terms gives the sharper $`\sqrt2`$, which is what the
+   verifier tests; the constant 2 is all that is needed.) Assemble with step 3. $`\square`$
 
 **Corollary 4.2 (real sign words; the certified form).** *For the repeated real sign word,*
 
@@ -329,8 +330,9 @@ The form of this corollary that was independently audited (see `STATUS.md`) carr
 constant $`8`$ and is proved by a symmetric weighting: with $`d_p=\lambda_p+\mu_p`$ and
 $`D=\mathrm{diag}(d)`$ one writes $`\mathrm{Re}(g^{\top}Mg)=v^{*}Kv`$ with
 $`v=D^{1/2}g`$, $`\|v\|^2=\mathrm{Tr}D\le2\min(N,Q)`$, and bounds $`\mathbb E\|K\|\le4\sqrt{\log2Q}`$.
-The asymmetric route above was also verified in that audit, as the $`\sqrt{LR}`$
-strengthening; both routes are valid and incomparable instance by instance. The
+The asymmetric route above was also verified in that audit, as the product-form
+strengthening with $`\|B\|_F\|C\|_F`$ in place of $`\mathrm{Tr}\,D`$; both routes are valid and
+incomparable instance by instance. The
 deterministic spine of the symmetric route is formalized in `lean/`.
 
 **Remark 4.3 (the weighting is sufficient, not unique).** Under $`d\mapsto td`$ the
@@ -366,14 +368,14 @@ restriction is gone, and with it the restriction to a single table.
 ```math
 \log\mathrm{Pack}_{\rho\sqrt N}\lbrace T_{x,y}\rbrace
 \;\le\;\frac{2C_S^2\,w_2^2}{\rho^2N}
-\;\le\;\frac{K}{\rho^2}\,N\log(2Q),
-\qquad K:=8C_S^2,
+\;\le\;\frac{\kappa}{\rho^2}\,N\log(2Q),
+\qquad \kappa:=8C_S^2,
 ```
 
 *where $`C_S`$ is the constant in Sudakov's minoration for the process
 $`X_T=\mathrm{Re}\,\mathrm{Tr}(G^{*}T)`$, whose intrinsic distance is $`\|S-T\|_F/\sqrt2`$.*
 
-*Proof.* Sudakov's minoration [Ver18, Thm 7.4.1]: a family that is $`\epsilon`$-separated in
+*Proof.* Sudakov's minoration [Ver18, Thm 7.4.1], [Tal14]: a family that is $`\epsilon`$-separated in
 the process metric and lies in the index set of a Gaussian process with
 $`\mathbb E\sup X_T=w`$ has $`\epsilon\sqrt{\log\mathrm{Pack}}\le C_Sw`$. At Frobenius
 separation $`\rho\sqrt N`$ the process separation is $`\rho\sqrt{N/2}`$, and
@@ -387,7 +389,8 @@ on. $`\square`$
 > downstream consumers quote. Re-check the separation metric before instantiating it.
 
 **Corollary 5.2 (qubit lower bound).** *For every $`0<\rho<\sqrt2`$,
-$`\log\mathrm{Pack}_{\rho\sqrt N}U(N)\ge c\,(1-\rho^2/2)^2N^2`$ for an absolute $`c>0`$. Hence no
+$`\log\mathrm{Pack}_{\rho\sqrt N}U(N)\ge c\,(1-\rho^2/2)^2N^2`$ for an absolute $`c>0`$ and all
+$`N\ge3`$. Hence no
 fixed clean two-query architecture realizes every unitary, exactly or with operator-norm
 error below $`\rho/4`$, unless $`\log Q=\Omega_\rho(N)`$. In qubit count:*
 
@@ -401,14 +404,14 @@ error below $`\rho/4`$, unless $`\log Q=\Omega_\rho(N)`$. In qubit count:*
 so $`V`$ lies in the Frobenius ball of radius $`\rho\sqrt N`$ about $`U`$ exactly when
 $`\mathrm{Re}\,\mathrm{Tr}(U^{*}V)\ge N(1-\rho^2/2)`$. The function
 $`V\mapsto\mathrm{Re}\,\mathrm{Tr}(U^{*}V)`$ has Haar mean zero and is $`\sqrt N`$-Lipschitz in the
-Frobenius metric, and concentration of Lipschitz functions on $`U(N)`$ [Mec19, Ch. 5]
+Frobenius metric, and concentration of Lipschitz functions on $`U(N)`$ [Mec19, Thm 5.17]
 gives $`\Pr(f\ge\mathbb Ef+t)\le\exp(-c'Nt^2/L^2)`$; at $`t=N(1-\rho^2/2)`$, $`L=\sqrt N`$, the
 ball has Haar measure at most $`\exp(-c'(1-\rho^2/2)^2N^2)`$. A maximal
 $`\rho\sqrt N`$-separated set is a $`\rho\sqrt N`$-covering, so its size is at least the
 reciprocal of that measure. If an architecture realizes each member $`U_i`$ of such a set to
 operator-norm error below $`\rho/4`$, the realized operators are within Frobenius distance
 $`\rho\sqrt N/4`$ of the $`U_i`$ and hence $`\rho\sqrt N/2`$-separated; Corollary 5.1 at
-scale $`\rho/2`$ gives $`c(1-\rho^2/2)^2N^2\le4K\rho^{-2}N\log(2Q)`$, i.e.
+scale $`\rho/2`$ gives $`c(1-\rho^2/2)^2N^2\le4\kappa\rho^{-2}N\log(2Q)`$, i.e.
 $`\log Q=\Omega_\rho(N)`$. $`\square`$
 
 For comparison, the trivial clean two-query lookup, which stores every entry of $`U`$ in the
@@ -416,24 +419,24 @@ table, uses $`\tilde\Theta(N^2)`$ qubits, so at this point the threshold sits in
 $`[\Omega(N),\tilde O(N^2)]`$; Theorem 6.4 closes the gap.
 
 **Proposition 5.3 (the constant matters).** *The permutation family of Section 6 forces
-$`K\ge\tfrac14`$ asymptotically, the maximum being approached at separation $`\rho^2=1`$.*
+$`\kappa\ge\tfrac14`$ asymptotically, the maximum being approached at separation $`\rho^2=1`$.*
 Computed from Gilbert–Varshamov packings of permutation codes
 (`verify_crho_requirement.py`), with $`d=N`$:
 
 | $`d`$ | 16 | 256 | 4096 | 65536 | $`\to\infty`$ |
 |---|---|---|---|---|---|
-| required $`K`$ | 0.126 | 0.159 | 0.185 | 0.200 | **0.25** |
+| required $`\kappa`$ | 0.126 | 0.159 | 0.185 | 0.200 | **0.25** |
 
 Against this, Sudakov's minoration holds with $`C_S\le2.09`$: comparing the process on the
 packing set with independent $`\mathcal N(0,\epsilon^2/2)`$ variables through the
 Sudakov–Fernique inequality [Ver18, Thm 7.2.11], and using that the expected maximum of
 $`m\ge2`$ independent standard normals is at least $`0.677\sqrt{\log m}`$ (the minimum over
 $`m`$ is at $`m=2`$, where the ratio is $`1/\sqrt{\pi\log2}`$), gives
-$`\epsilon\sqrt{\log\mathrm{Pack}}\le2.09\,\mathbb E\sup X_T`$. Hence $`K=8C_S^2\le35`$ for
-the constant-2 route of Theorem 4.1, and $`K\le560`$ for the audited constant-8 form. Either
-way the requirement $`K\ge1/4`$ is met with two orders of magnitude to spare. We record
-the requirement because it is real: at $`K<1/4`$ the theorem would be contradicted by a
-published construction.
+$`\epsilon\sqrt{\log\mathrm{Pack}}\le2.09\,\mathbb E\sup X_T`$. Hence $`\kappa=8C_S^2\le35`$ for
+the constant-2 route of Theorem 4.1, and $`\kappa\le560`$ for the audited constant-8 form.
+Either way the requirement $`\kappa\ge1/4`$ is met with two orders of magnitude to spare. We
+record the requirement because it is real: at $`\kappa<1/4`$ the theorem would be
+contradicted by a published construction.
 
 ---
 
@@ -443,7 +446,7 @@ published construction.
 
 **Proposition 6.1.** *The clean two-query permutation-synthesis algorithm of [DLM26] lies
 inside Definition 2.1 and attains the ceiling of Corollary 5.1 up to the constant factor
-$`4K`$.*
+$`4\kappa`$.*
 
 [DLM26] synthesize any permutation unitary $`P_\pi`$ on $`d=N`$ dimensions in two clean
 queries, querying $`\pi`$ then $`\pi^{-1}`$. Index addresses by $`(b,x,y)`$ with
@@ -501,8 +504,9 @@ with the whole workspace). Then for every two-query architecture*
 \;\le\;2N\sqrt{\log(2MN)} ,
 ```
 
-*and consequently universal clean two-query synthesis requires $`\log M=\Omega(N)`$, i.e.
-an oracle input length of $`\Omega(2^n)`$ bits, regardless of the number of ancillas.*
+*and consequently universal clean two-query synthesis, exact or to operator-norm error below
+an absolute constant, requires $`\log M=\Omega(N)`$, i.e. an oracle input length of
+$`\Omega(2^n)`$ bits, regardless of the number of ancillas.*
 
 *Proof.* Let $`L:=\sum_j\mathrm{ran}(P_jB^{*})`$ and $`R:=\sum_j\mathrm{ran}(P_jC)`$, subspaces of
 $`\mathbb C^Q`$ of dimension at most $`MN`$ each. Because the $`P_j`$ are mutually
@@ -524,8 +528,9 @@ applies to the compressed architecture: its statement has a square middle layer,
 proof never uses squareness (Remark 4.4), and with a $`\dim L\times\dim R`$ middle the
 Khintchine step gives $`\sqrt{\log(\dim L+\dim R)}\le\sqrt{\log(2MN)}`$. The supremum over
 all unimodular diagonals on $`L`$ and $`R`$ dominates the supremum over the repeated
-patterns. Corollary 5.1 then reads $`\log\mathrm{Pack}\le K\rho^{-2}N\log(2MN)`$, and the
-$`\Omega(N^2)`$ demand of a Haar-scale code forces $`\log M=\Omega(N)`$. $`\square`$
+patterns. Corollary 5.1 then reads $`\log\mathrm{Pack}\le\kappa\rho^{-2}N\log(2MN)`$, and the
+$`\Omega(N^2)`$ demand of a Haar-scale code, with the error tolerance of Corollary 5.2,
+forces $`\log M=\Omega(N)`$. $`\square`$
 
 For a bit-flip oracle $`O_f|x,b\rangle=|x,b\oplus f(x)\rangle`$ the eigen-decomposition of the
 response bit gives $`M+1`$ addresses; nothing changes. The two selectors may also use
@@ -561,20 +566,20 @@ $`\pm1`$ table serving both queries.*
 `verify_koopman_transport.py`.
 
 Encode a state as a function on a finite grid rather than as a list of columns. Quantize the
-standard normal distribution into $`K`$ equiprobable intervals with conditional means
-$`q_a`$, put $`s^2=\tfrac1K\sum_aq_a^2`$ and $`e^2=1-s^2`$; a direct estimate gives
-$`e^2\le32K^{-1/3}`$ (natural logarithms throughout), so $`K=\mathrm{poly}(1/\varepsilon)`$ makes
-$`e`$ as small as needed, independently of $`N`$. For addresses $`a\in[K]^{2N}`$, $`M=K^{2N}`$, define
+standard normal distribution into $`J`$ equiprobable intervals with conditional means
+$`q_a`$, put $`s^2=\tfrac1J\sum_aq_a^2`$ and $`e^2=1-s^2`$; a direct estimate gives
+$`e^2\le32J^{-1/3}`$ (natural logarithms throughout), so $`J=\mathrm{poly}(1/\varepsilon)`$ makes
+$`e`$ as small as needed, independently of $`N`$. For addresses $`a\in[J]^{2N}`$, $`M=J^{2N}`$, define
 $`w_a\in\mathbb C^N`$ by $`(w_a)_k=(q_{a_k}+iq_{a_{N+k}})/(s\sqrt2)`$ and the fixed encoding
 $`(E\psi)_a=w_a^{*}\psi/\sqrt M`$. Independence, zero means and the normalization give
 $`E^{*}E=I_N`$ exactly.
 
 For a target $`U`$ with realification $`O_U`$, draw $`X\sim\mathcal N(0,I_{2N})`$ and quantize
-coordinatewise: $`A=Q(X)`$, $`B=Q(O_UX)`$. Both are uniform on $`[K]^{2N}`$, so
-$`D_{ba}=M\Pr(A=a,B=b)`$ is doubly stochastic and, by Birkhoff–von Neumann, a convex
-combination $`\sum_{\ell=1}^{m}p_\ell P_{\pi_\ell}`$ of at most $`m\le M^2`$ permutation matrices. The quantization
-residual $`r(X)=X-q_{Q(X)}`$ has covariance $`e^2I_{2N}`$, and
-$`q_{Q(O_UX)}-O_Uq_{Q(X)}=O_Ur(X)-r(O_UX)`$, whence, using
+coordinatewise with the cell map $`\theta`$: $`\alpha=\theta(X)`$, $`\beta=\theta(O_UX)`$. Both are
+uniform on $`[J]^{2N}`$, so $`\Xi_{ba}=M\Pr(\alpha=a,\beta=b)`$ is doubly stochastic and, by
+Birkhoff–von Neumann [Bir46], a convex combination $`\sum_{\ell=1}^{m}p_\ell P_{\pi_\ell}`$ of at
+most $`m\le M^2`$ permutation matrices. The quantization residual $`r(X)=X-q_{\theta(X)}`$ has
+covariance $`e^2I_{2N}`$, and $`q_{\theta(O_UX)}-O_Uq_{\theta(X)}=O_Ur(X)-r(O_UX)`$, whence, using
 $`(a-b)(a-b)^{\top}\preceq2aa^{\top}+2bb^{\top}`$,
 
 ```math
@@ -583,7 +588,7 @@ $`(a-b)(a-b)^{\top}\preceq2aa^{\top}+2bb^{\top}`$,
 ```
 
 This is a uniform operator bound, valid for every input. To make the mixture a single
-permutation, put $`\delta:=\varepsilon/2`$, take $`K`$ with $`e^2\le\delta^2/100`$, and add a
+permutation, put $`\delta:=\varepsilon/2`$, take $`J`$ with $`e^2\le\delta^2/100`$, and add a
 uniform coherent label register over $`R\ge100M^2/\delta^2`$ copies, a power of two fixed by
 $`M`$ and $`\delta`$ alone and hence independent of the target, with integer multiplicities
 $`k_\ell\approx Rp_\ell`$, $`\sum_\ell|p_\ell-k_\ell/R|\le2m/R`$; set $`\Pi_U(j,a)=(j,\pi_{\ell(j)}(a))`$
@@ -601,8 +606,10 @@ input. The permutation $`\Pi_U`$ and its inverse are stored in one Boolean table
 $`1+2t`$ input bits, $`t=\log_2(MR)=O(N\log(1/\varepsilon))`$, and are applied by two queries
 in the standard way (load $`\Pi_U(z)`$ into a blank register, swap, unload with the inverse
 table). The fixed encoder is an explicit polynomial-size circuit and its inverse decodes.
-Total isometry error at most $`3\varepsilon/4`$; two isometries at operator distance
-$`\alpha`$ induce channels at half-diamond distance at most $`\alpha`$. $`\square`$
+Total isometry error at most $`3\varepsilon/4`$: $`\delta=\varepsilon/2`$ from the label register
+and $`\varepsilon/8`$ each for the encoder and the decoder. Two isometries at operator distance
+$`\gamma`$ induce channels at half-diamond distance at most $`\gamma`$. The full estimates are
+in the note.
 
 The lower bound of Theorem 6.3 shows that for this mechanism, and indeed for any monomial
 action between fixed encodings, the exponential address length is unavoidable; the note
@@ -610,7 +617,7 @@ records that converse and its one loophole, a target-dependent final ancilla sta
 does not affect the clean model treated here.
 
 **Corollary 6.5 (the thresholds).** *For clean two-query synthesis of all $`n`$-qubit
-unitaries at operator-norm error $`\varepsilon`$, $`\varepsilon`$ a small constant, both the qubit
+unitaries at operator-norm error $`\varepsilon`$ below an absolute constant, both the qubit
 count $`w^{\star}`$ and the oracle input length $`\ell^{\star}`$ satisfy*
 
 ```math
@@ -627,11 +634,11 @@ state their one-query bounds there. This section prices, exactly, what a two-que
 that model would require of the clean machinery.
 
 **Setting.** A $`t`$-query circuit
-$`V(g)=A_t(D_g\otimes I_K)A_{t-1}\cdots(D_g\otimes I_K)A_0`$ on $`\mathbb C^Q\otimes\mathbb C^K`$,
-where $`Q`$ is the number of addresses and $`K`$ the workspace dimension, restricted to the
+$`V(g)=A_t(D_g\otimes I_k)A_{t-1}\cdots(D_g\otimes I_k)A_0`$ on $`\mathbb C^Q\otimes\mathbb C^k`$,
+where $`Q`$ is the number of addresses and $`k`$ the workspace dimension, restricted to the
 clean input, $`S_g:=V(g)\iota`$ with $`\iota\psi=\psi\otimes|0\rangle`$, is an isometry
-$`\mathbb C^N\to\mathbb C^Q\otimes\mathbb C^K\cong\mathbb C^N\otimes\mathbb C^D`$, with
-$`D=QK/N`$ the junk dimension, whose entries are multilinear polynomials of degree $`t`$ in
+$`\mathbb C^N\to\mathbb C^Q\otimes\mathbb C^k\cong\mathbb C^N\otimes\mathbb C^D`$, with
+$`D=Qk/N`$ the junk dimension, whose entries are multilinear polynomials of degree $`t`$ in
 the signs. In the
 **keep form** $`S_g\psi=(U_g\psi)\otimes|j_g\rangle`$. The **discard form** only requires the
 induced channel to be within diamond distance $`\varepsilon`$ of $`U_g`$; since a unitary
@@ -654,7 +661,8 @@ The width-and-Sudakov machinery of Sections 4 and 5 prices a Gaussian process th
 garbage packet is nonzero; the invariants that factor through the channel are quadratic, the
 basic one being $`S_g^{*}(X\otimes I)S_g=U_g^{*}XU_g`$, of degree $`2t`$ in the signs. This is
 the exact sense in which cleanliness halves the degree, and it says what any junk-blind
-width argument for garbage-$`t`$ must be: a clean bound at $`2t`$ insertions.
+width argument, linear in the realized operator, for garbage-$`t`$ must be: a clean bound at
+$`2t`$ insertions.
 
 **Theorem 7.2 (conjugation transfer).** *Consider the $`2t`$-insertion class
 $`\lbrace Y_{2t}D_gY_{2t-1}\cdots D_gY_0:\|Y_i\|\le1\rbrace`$ with $`D_g=\sum_{j\le Q}g_jP_j`$ for
@@ -668,7 +676,7 @@ error. At $`t=1`$, Theorem 6.3 gives $`\phi(Q)=\log(2QN)`$.*
 *Proof.* Fix a balanced reflection $`R`$ ($`R=R^{*}`$, $`R^2=I`$, $`\mathrm{Tr}R=0`$) and
 set $`T_g:=S_g^{*}(R\otimes I)S_g`$. Because $`D_g\otimes I`$ is Hermitian, expanding
 $`S_g^{*}`$ by reversal writes $`T_g`$ exactly as a $`2t`$-insertion product of the same sign
-word on $`\mathbb C^Q\otimes\mathbb C^K`$, with address projectors $`P_j\otimes I_K`$ and
+word on $`\mathbb C^Q\otimes\mathbb C^k`$, with address projectors $`P_j\otimes I_k`$ and
 contractions in every slot (the middle slot is $`A_t^{*}(R\otimes I)A_t`$; the product is
 palindromic, $`T_g=Y_g^{*}\,A_t^{*}(R\otimes I)A_t\,Y_g`$ with
 $`Y_g=(D_g\otimes I)A_{t-1}\cdots(D_g\otimes I)A_0\iota`$). In the
@@ -719,7 +727,12 @@ ancillas explicitly inside $`\log(2Q)`$, and, via Theorem 6.3, the oracle input 
    in exponent by [Ros26]: every unitary is implementable at $`k=\tilde O(\sqrt N)`$ with
    $`\log Q=\mathrm{poly}(n)`$, so the width must reach the $`\Theta(N^{3/2})`$ width of the
    unitary group there, which forces at least linear growth in $`k`$. A proof of the conjecture would
-   resolve the Aaronson–Kuperberg question negatively. The two-query proof does not extend
+   resolve the Aaronson–Kuperberg question negatively. Less would do: any bound of the form
+   $`N\cdot\mathrm{poly}(k,\log Q)`$ already excludes universal clean synthesis at polynomial
+   depth and polynomial qubit count, since such a class could not $`\varepsilon`$-cover
+   $`U(N)`$, whose width is $`\Theta(N^{3/2})`$ (the argument of Corollary 6.2); and by
+   Theorem 7.2 the same bound at $`2k`$ insertions, in address form, would exclude it in the
+   garbage model as well. The two-query proof does not extend
    as it stands: with a third insertion the coefficient matrix depends on the selector.
 2. **Parallel versus adaptive.** [LMW24] rule out polynomially many *parallel* queries. The
    difficulty at $`t\ge3`$ is therefore entirely in interleaving.
@@ -733,8 +746,8 @@ ancillas explicitly inside $`\log(2Q)`$, and, via Theorem 6.3, the oracle input 
    record this as a reformulation, not a result.
 
 **Consistency checks.** The bound does not forbid the trivial clean two-query lookup
-($`w=\Theta(d^2)`$), is attained up to $`\log(1/\varepsilon)`$ by Theorem 6.4, and does not
-contradict [Ros26], whose algorithm uses $`t=O(\sqrt d)`$ queries. Any extension of this
+($`w=\Theta(N^2)`$), is attained up to $`\log(1/\varepsilon)`$ by Theorem 6.4, and does not
+contradict [Ros26], whose algorithm uses $`t=O(\sqrt N)`$ queries. Any extension of this
 method yielding $`t=\omega(\sqrt N)`$ in the clean model would contradict [Ros26] and be in
 error.
 
@@ -779,7 +792,7 @@ for exactly what is and is not certified.
 - **[Ver18]** R. Vershynin. *High-Dimensional Probability.* Cambridge University Press, 2018.
   (Sudakov–Fernique, Thm 7.2.11; Sudakov minoration, Thm 7.4.1.)
 - **[Mec19]** E. S. Meckes. *The Random Matrix Theory of the Classical Compact Groups.*
-  Cambridge University Press, 2019. (Concentration of Lipschitz functions on $`U(N)`$, Ch. 5.)
+  Cambridge University Press, 2019. (Concentration of Lipschitz functions on $`U(N)`$, Thm 5.17.)
 - **[BBCMW98]** R. Beals, H. Buhrman, R. Cleve, M. Mosca, R. de Wolf. *Quantum lower bounds
   by polynomials.* FOCS 1998; J. ACM 48(4), 2001.
 - **[DP93]** C. Delorme, S. Poljak. *Laplacian eigenvalues and the maximum cut problem.*
@@ -789,9 +802,9 @@ for exactly what is and is not certified.
 - **[Nes98]** Y. Nesterov. *Semidefinite relaxation and nonconvex quadratic optimization.*
   Optimization Methods and Software 9, 1998.
 - **[AN06]** N. Alon, A. Naor. *Approximating the cut-norm via Grothendieck's inequality.*
-  SIAM J. Computing 35(4), 2006.
+  SIAM J. Computing 35(4):787–803, 2006.
 - **[CW04]** M. Charikar, A. Wirth. *Maximizing quadratic programs: extending Grothendieck's
-  inequality.* FOCS 2004.
+  inequality.* Proc. 45th IEEE Symposium on Foundations of Computer Science (FOCS 2004), 54–60.
 - **[Bir46]** G. Birkhoff. *Tres observaciones sobre el algebra lineal.* Univ. Nac. Tucumán
   Rev. Ser. A 5, 1946.
 

@@ -60,44 +60,45 @@ restores its own auxiliary register.
 
 ## 2. Quantizing the Gaussian
 
-Choose a power of two $`K`$. Partition the real standard normal distribution into $`K`$
-intervals of equal probability. Let $`Q(X)\in[K]`$ name the interval containing $`X`$ and
-put
+Choose a power of two $`J`$. Partition the real standard normal distribution into $`J`$
+intervals of equal probability. Let $`\theta(X)\in[J]`$ name the interval containing $`X`$ and
+put (the verifier's code writes `K` for $`J`$, `Q` for $`\theta`$, `A, B` for the labels
+$`\alpha,\beta`$ below and `D` for the coupling $`\Xi`$)
 
 ```math
-q_a=\mathbb E[X\mid Q(X)=a],\qquad
-\frac1K\sum_aq_a=0,\qquad
-s^2:=\frac1K\sum_aq_a^2,\qquad
-e^2:=\mathbb E\bigl(X-q_{Q(X)}\bigr)^2=1-s^2 .
+q_a=\mathbb E[X\mid \theta(X)=a],\qquad
+\frac1J\sum_aq_a=0,\qquad
+s^2:=\frac1J\sum_aq_a^2,\qquad
+e^2:=\mathbb E\bigl(X-q_{\theta(X)}\bigr)^2=1-s^2 .
 ```
 
-**Lemma 2.1 (quantizer error).** *For $`K\ge4`$, $`e^2\le32K^{-1/3}`$ (natural logarithms
+**Lemma 2.1 (quantizer error).** *For $`J\ge4`$, $`e^2\le32J^{-1/3}`$ (natural logarithms
 throughout).*
 
 *Proof.* Write $`g(u)=\Phi^{-1}(u)`$ for the normal quantile function and $`g_T`$ for its
 clipping to $`[-T,T]`$. The clipped function is Lipschitz with constant
 $`L_T=\sqrt{2\pi}\,e^{T^2/2}`$. Conditional means minimize squared error among functions
-constant on the $`K`$ equal-probability intervals, so
-$`e\le\|g-g_T\|_2+L_T/K`$. For $`T\ge1`$,
+constant on the $`J`$ equal-probability intervals, so
+$`e\le\|g-g_T\|_2+L_T/J`$. For $`T\ge1`$,
 $`\|g-g_T\|_2^2\le\mathbb E[X^2\mathbf 1_{|X|>T}]\le2(T+1)\phi(T)`$. Taking
-$`T=\sqrt{\log K}`$ gives
+$`T=\sqrt{\log J}`$ gives
 
 ```math
-e^2\le\frac{4(\sqrt{\log K}+1)}{\sqrt{2\pi K}}+\frac{4\pi}{K}\le32K^{-1/3}.
+e^2\le\frac{4(\sqrt{\log J}+1)}{\sqrt{2\pi J}}+\frac{4\pi}{J}\le32J^{-1/3}.
 \qquad\square
 ```
 
-So $`K=\mathrm{poly}(1/\varepsilon)`$, independent of $`N`$, makes $`e`$ as small as
-required; concretely a power of two with $`K\ge(3200/\delta^2)^3`$ gives
-$`e^2\le\delta^2/100`$, and $`\log K=O(\log(1/\delta))`$.
-`verify_koopman_transport.py` check (1) evaluates $`s^2,e^2`$ for several $`K`$ against
+So $`J=\mathrm{poly}(1/\varepsilon)`$, independent of $`N`$, makes $`e`$ as small as
+required; concretely a power of two with $`J\ge(3200/\delta^2)^3`$ gives
+$`e^2\le\delta^2/100`$, and $`\log J=O(\log(1/\delta))`$.
+`verify_koopman_transport.py` check (1) evaluates $`s^2,e^2`$ for several $`J`$ against
 the bound.
 
 ---
 
 ## 3. The fixed encoding
 
-Use $`2N`$ real coordinates. Let $`\Omega=[K]^{2N}`$, $`M=|\Omega|=K^{2N}`$, and for
+Use $`2N`$ real coordinates. Let $`\Omega=[J]^{2N}`$, $`M=|\Omega|=J^{2N}`$, and for
 $`a\in\Omega`$ define
 
 ```math
@@ -113,10 +114,10 @@ $`\frac1M\sum_aw_aw_a^{*}=I_N`$, hence
 E^{*}E=I_N\quad\text{exactly.}
 ```
 
-Check (2) of the verifier confirms this at $`N=1,2`$, $`K=4`$ to machine precision.
+Check (2) of the verifier confirms this at $`N=1,2`$, $`J=4`$ to machine precision.
 
-**Circuit for the encoder.** Define two orthonormal states on $`\log_2K`$ qubits,
-$`|g\rangle=K^{-1/2}\sum_a|a\rangle`$ and $`|h\rangle=(s\sqrt K)^{-1}\sum_aq_a|a\rangle`$. Then
+**Circuit for the encoder.** Define two orthonormal states on $`\log_2J`$ qubits,
+$`|g\rangle=J^{-1/2}\sum_a|a\rangle`$ and $`|h\rangle=(s\sqrt J)^{-1}\sum_aq_a|a\rangle`$. Then
 
 ```math
 E|j\rangle=\frac1{\sqrt2}\Bigl(|h\rangle_j\bigotimes_{k\ne j}|g\rangle_k\;-\;i\,|h\rangle_{N+j}\bigotimes_{k\ne N+j}|g\rangle_k\Bigr)
@@ -126,12 +127,12 @@ on $`2N`$ coordinate registers. A circuit: (i) convert the binary input label co
 into a single excitation among $`2N`$ registers, the two locations $`j`$ and $`N+j`$
 carrying relative phase $`-i`$; (ii) erase the binary label reversibly by reconstructing it
 from the excitation's position; (iii) on every coordinate register apply the same fixed
-$`K`$-dimensional unitary taking $`|0\rangle\mapsto|g\rangle`$, $`|1\rangle\mapsto|h\rangle`$;
+$`J`$-dimensional unitary taking $`|0\rangle\mapsto|g\rangle`$, $`|1\rangle\mapsto|h\rangle`$;
 (iv) prepare the label register of Section 5 with Hadamards. Step (i) takes
 $`O(N(n+1)^2)`$ reversible gates; step (iii), after finite-precision compilation of one
-fixed $`K`$-dimensional unitary, $`O(NK^2\,\mathrm{poly}(\log K,\log(N/\varepsilon)))`$
+fixed $`J`$-dimensional unitary, $`O(NJ^2\,\mathrm{poly}(\log J,\log(N/\varepsilon)))`$
 gates. The quantiles and the resulting gates are numerical constants depending only on
-$`K`$. Compile the encoder to operator error at most $`\varepsilon/8`$ and decode with its
+$`J`$. Compile the encoder to operator error at most $`\varepsilon/8`$ and decode with its
 circuit inverse. No target-dependent gate angle is supplied anywhere.
 
 ---
@@ -144,15 +145,15 @@ Fix the target $`U`$ and its realification
 O_U=\begin{pmatrix}\mathrm{Re}\,U&-\mathrm{Im}\,U\\ \mathrm{Im}\,U&\mathrm{Re}\,U\end{pmatrix}\in O(2N).
 ```
 
-Draw $`X\sim\mathcal N(0,I_{2N})`$ and form the grid labels $`A=Q(X)`$, $`B=Q(O_UX)`$ with
+Draw $`X\sim\mathcal N(0,I_{2N})`$ and form the grid labels $`\alpha=\theta(X)`$, $`\beta=\theta(O_UX)`$ with
 coordinatewise quantization. Both are uniform on $`\Omega`$, so
 
 ```math
-D_{ba}=M\,\Pr(A=a,\,B=b)
+\Xi_{ba}=M\,\Pr(\alpha=a,\,\beta=b)
 ```
 
 is doubly stochastic and admits a Birkhoff decomposition
-$`D=\sum_{\ell=1}^{m}p_\ell P_{\pi_\ell}`$, $`m\le M^2`$, into permutation matrices. (Hall's
+$`\Xi=\sum_{\ell=1}^{m}p_\ell P_{\pi_\ell}`$, $`m\le M^2`$, into permutation matrices. (Hall's
 condition holds on the support; pick a perfect matching, subtract its smallest entry, and
 repeat. Row and column sums stay equal and one positive entry disappears each round, so at
 most $`M^2`$ rounds occur and the subtracted weights sum to one.)
@@ -164,32 +165,32 @@ most $`M^2`$ rounds occur and the subtracted weights sum to one.)
 \tag{1}
 ```
 
-*Proof.* Let $`r(X)=X-q_{Q(X)}`$ be the quantization residual. Its covariance is
+*Proof.* Let $`r(X)=X-q_{\theta(X)}`$ be the quantization residual. Its covariance is
 $`e^2I_{2N}`$, and the same holds for $`r(O_UX)`$ since $`O_UX`$ is again standard normal.
-Also $`q_{Q(O_UX)}-O_Uq_{Q(X)}=O_Ur(X)-r(O_UX)`$. Using
+Also $`q_{\theta(O_UX)}-O_Uq_{\theta(X)}=O_Ur(X)-r(O_UX)`$. Using
 $`(a-b)(a-b)^{\top}\preceq2aa^{\top}+2bb^{\top}`$,
 
 ```math
-\mathbb E\bigl[(q_{Q(O_UX)}-O_Uq_{Q(X)})(q_{Q(O_UX)}-O_Uq_{Q(X)})^{\top}\bigr]\preceq4e^2I_{2N}.
+\mathbb E\bigl[(q_{\theta(O_UX)}-O_Uq_{\theta(X)})(q_{\theta(O_UX)}-O_Uq_{\theta(X)})^{\top}\bigr]\preceq4e^2I_{2N}.
 ```
 
 Converting to the normalized complex coordinates $`w`$ gives
-$`\mathbb E\,(w_B-Uw_A)(w_B-Uw_A)^{*}\preceq(4e^2/s^2)I_N`$. At output coordinate
+$`\mathbb E\,(w_\beta-Uw_\alpha)(w_\beta-Uw_\alpha)^{*}\preceq(4e^2/s^2)I_N`$. At output coordinate
 $`b=\pi(a)`$ the entry of $`\Delta_\pi\psi`$ is $`(w_a^{*}\psi-w_b^{*}U\psi)/\sqrt M`$;
 averaging its squared magnitude over the coupling is exactly the quadratic form just
 bounded. $`\square`$
 
 Equation (1) is an operator bound, valid for every input at once, not an average-case
 statement. No measurement of the input has entered. Check (3) of the verifier estimates the
-left side by Monte Carlo at $`N=2`$, $`K=4`$ and confirms both the operator bound and the
+left side by Monte Carlo at $`N=2`$, $`J=4`$ and confirms both the operator bound and the
 identity between the coupling reading and the operator reading; check (5) forms the left
-side from a real coupling and a real Birkhoff decomposition at $`N=1`$, $`K=4`$.
+side from a real coupling and a real Birkhoff decomposition at $`N=1`$, $`J=4`$.
 
 ---
 
 ## 5. One coherent permutation from the mixture
 
-Set $`\delta=\varepsilon/2`$ and take $`K`$ with $`e^2\le\delta^2/100`$. Choose a power of
+Set $`\delta=\varepsilon/2`$ and take $`J`$ with $`e^2\le\delta^2/100`$. Choose a power of
 two $`R\ge100M^2/\delta^2`$; since $`m\le M^2`$, $`R`$ is fixed by $`M`$ and $`\delta`$ alone
 and does not depend on the target, which is what keeps the enlarged encoding below
 target-independent. Approximate the weights by integer multiplicities $`k_\ell/R`$ with
@@ -227,7 +228,7 @@ same uniform state $`|+_R\rangle`$, uncorrelated with the input, and the inverse
 restores the coordinate registers. All target dependence sits in the classical permutation
 $`\Pi_U`$. Check (4) of the verifier confirms Lemma 5.1 on a synthetic Birkhoff mixture
 with $`M=256`$, $`R=8`$, and check (5) confirms it, together with the inequality above, on a
-real coupling, a real Birkhoff decomposition and the real $`\Pi_U`$ at $`N=1`$, $`K=4`$,
+real coupling, a real Birkhoff decomposition and the real $`\Pi_U`$ at $`N=1`$, $`J=4`$,
 $`R=2^{14}`$.
 
 ---
@@ -257,8 +258,8 @@ Definition 2.1 with $`B,W,C`$ independent of $`U`$.
 **Total error.** (2), the encoder error and the decoder error give isometry error at most
 $`\delta+2(\varepsilon/8)=3\varepsilon/4`$; compressing to the target register is a
 contraction, so the realized map on the target register is within operator-norm distance
-$`3\varepsilon/4`$ of $`U`$ as well. Two isometries at operator distance $`\alpha`$ induce
-channels at half-diamond distance at most $`\alpha`$: tensoring with a reference preserves
+$`3\varepsilon/4`$ of $`U`$ as well. Two isometries at operator distance $`\gamma`$ induce
+channels at half-diamond distance at most $`\gamma`$: tensoring with a reference preserves
 the operator bound, the trace distance of the resulting pure states is at most their vector
 distance, tracing out the environment does not increase it, and convexity covers mixed
 inputs. The table is fixed before the

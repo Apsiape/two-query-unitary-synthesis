@@ -1,6 +1,6 @@
 # STATUS — claim-by-claim ledger
 
-*Updated 2026-09-11 for version 1.0.1. This file is the authority on what this repository
+*Updated 2026-09-11 for version 1.0.2. This file is the authority on what this repository
 claims and how each claim is supported. When it disagrees with a sentence elsewhere, this
 file wins.*
 
@@ -30,7 +30,7 @@ no finite check of its own.
 | Cor 4.2, audited form | real sign words, symmetric weighting, constant 8 | **AUDITED 2026-08-16**; the asymmetric $`\sqrt{LR}`$ route was verified in the same audit for real selectors | `verify_proof_steps.py`; **CERTIFIED (Lean)** for the deterministic spine |
 | Cor 5.1 | capacity in the normalized Frobenius metric only | AUDITED 2026-08-16 (as a corollary of the audited width bound) | metric erratum recorded in the paper |
 | Cor 5.2 | quantitative packing of $`U(N)`$ and the $`\Omega(2^n)`$ qubit bound | AUDITED 2026-08-16 for the bound; the quantitative packing lemma is PROVED HERE | — |
-| Prop 5.3 | the permutation family forces $`K\ge1/4`$; $`C_S\le2.09`$, $`K\le35`$ | PROVED HERE | `verify_crho_requirement.py` (table values, monotonicity, the Sudakov–Fernique constant) |
+| Prop 5.3 | the permutation family forces $`\kappa\ge1/4`$; $`C_S\le2.09`$, $`\kappa\le35`$ | PROVED HERE | `verify_crho_requirement.py` (table values, monotonicity, the Sudakov–Fernique constant) |
 | Prop 6.1 | the Dong–Lombardi–Ma permutation family lies in the class and attains the ceiling up to the constant | PROVED HERE | `verify_permutation_family.py` |
 | Cor 6.2 | both factors tight at $`Q=\Theta(N^2)`$; the logarithm is necessary at exponential $`Q`$ | PROVED HERE | — (Sudakov backwards on Prop 6.1; Thm 6.4) |
 | Thm 6.3 | address-length lower bound $`\Omega(2^n)`$ bits, any workspace, two decompositions allowed | PROVED HERE (new in 1.0.0) | `verify_address_compression.py` |
@@ -89,6 +89,21 @@ found and fixed in 1.0.1:
 10. Overclaims in the abstract, introduction and README ("exactly", "nothing was known",
     "for every oracle") were reworded to what the theorems support.
 
+## Referee pass on the compiled paper (version 1.0.2)
+
+A sixth audit refereed the LaTeX rendition and the PDF against the markdown and the five
+earlier reports. It found no new mathematical error and confirmed every round-one fix.
+Changes made in 1.0.2: the capacity constant is now $`\kappa`$, the quantizer level count
+$`J`$, the workspace dimension of Section 7 $`k`$, and the transport construction uses
+$`\theta`$, $`\alpha,\beta`$, $`\Xi`$ for the cell map, labels and coupling, so that no
+symbol in the paper has two meanings; the abstract's junk-blindness sentence is restricted
+to linear width arguments, as Lemma 7.1 proves; Theorem 6.3 states its error tolerance;
+Corollary 6.5's error is "below an absolute constant"; the Meckes citation gives the
+theorem number; Section 8 records that any $`N\cdot\mathrm{poly}(k,\log Q)`$ width bound
+would already answer the Aaronson–Kuperberg question negatively, and that Theorem 7.2
+carries this to the garbage model; the paper names its repository URL; the condensed
+construction no longer ends with a proof mark.
+
 ## What changed relative to the earlier private draft (version 1.0.0)
 
 1. The unitarity criterion assumed an isometric middle layer; corrected.
@@ -117,3 +132,8 @@ cd lean && lake build && lake env lean axiom_check.lean
 
 The verifier suite needs only Python 3 and numpy and finishes in about a minute. The Lean
 check needs the pinned toolchain in `lean/lean-toolchain` and a Mathlib build cache.
+
+`paper/paper.tex` is a transcription of `paper/paper.md` with identical mathematical
+content; `paper/paper.pdf` is its compiled form (three `pdflatex` passes, standard packages
+only). When the two disagree, the markdown is the version the verifiers and this ledger
+refer to, and the disagreement is a defect to be fixed.

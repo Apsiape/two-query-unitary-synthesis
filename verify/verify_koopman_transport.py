@@ -1,6 +1,8 @@
 """Theorem 6.4 (matching upper bound) -- the permutation-transport construction, small cases.
 
-The construction (paper, Section 6.3; notes/permutation-transport.md):
+The construction (paper, Section 6.3; notes/permutation-transport.md).  Notation: the paper
+writes J for the level count K below, theta for the cell map Q(.), alpha/beta for the labels
+A/B, and Xi for the coupling matrix D.
   * quantize N(0,1) into K equiprobable intervals; q_k = conditional mean on interval k;
     s^2 = mean_k q_k^2;  e^2 = 1 - s^2 = mean-square quantization error;
   * addresses a in [K]^{2N}, M = K^{2N};  w_a = (q_{a_k} + i q_{a_{N+k}})_{k} / (s sqrt 2);

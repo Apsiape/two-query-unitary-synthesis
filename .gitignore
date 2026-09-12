@@ -5,6 +5,15 @@ lean/.lake/
 __pycache__/
 *.pyc
 
+# LaTeX build files (paper/paper.pdf is tracked; its auxiliaries are not)
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+
 # Editors / OS
 .vscode/
 .idea/

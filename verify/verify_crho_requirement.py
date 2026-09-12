@@ -3,7 +3,7 @@ PIN C_rho against the Dong-Lombardi-Ma permutation family.
 
 The chain (paper, Corollary 5.1):
     log Pack_{rho sqrt N} <= 2 C_S^2 * w_2^2 / (rho^2 N),   w_2 <= C1 * min(N,Q) * sqrt(log 2Q)
-    =>  log Pack <= (K / rho^2) * N * log(2Q),              K := 2 C_S^2 C1^2
+    =>  log Pack <= (kappa / rho^2) * N * log(2Q),              kappa := 2 C_S^2 C1^2
 where C_S is the Sudakov constant (eps sqrt(log Pack) <= C_S E sup) and C1 the width constant
 (2 for Theorem 4.1; 8 for the audited real-selector form).  Proposition 5.3 of the paper.
 
@@ -70,7 +70,7 @@ for label, Qof in CONVENTIONS.items():
     print(label)
     print("=" * 78)
     print(f"  {'d':>8} {'best alpha':>11} {'rho^2':>8} {'logPack':>12} "
-          f"{'d*log(2Q)':>12} {'required K':>12}")
+          f"{'d*log(2Q)':>12} {'required kappa':>12}")
     worst_K = 0.0
     for n in [4, 6, 8, 10, 12, 14, 16]:
         d = 2**n
@@ -93,7 +93,7 @@ for label, Qof in CONVENTIONS.items():
         results.setdefault(label, {})[d] = K
         print(f"  {d:>8} {alpha:>11.3f} {rho2:>8.3f} {lp:>12.1f} "
               f"{denom:>12.1f} {K:>12.4f}")
-    print(f"\n  -> REQUIRED  K = C * C1^2  >=  {worst_K:.4f}   (largest over d tested)")
+    print(f"\n  -> REQUIRED  kappa = C * C1^2  >=  {worst_K:.4f}   (largest over d tested)")
     # Asymptotics, done correctly.
     #   GV:  log M ~ (1-a) d (ln((1-a)d) - 1)   with a = alpha = D/d
     #   K   = rho^2 * logM / (d ln 2Q),  rho^2 = 2a
@@ -116,10 +116,10 @@ print("=" * 78)
 main = [k for k in results if "2d^2" in k][0]
 expected = {16: 0.1256, 256: 0.1591, 4096: 0.1849, 65536: 0.1999}
 for d, K_exp in expected.items():
-    check(f"required K at d = {d} matches the paper's table ({K_exp:.4f})",
+    check(f"required kappa at d = {d} matches the paper's table ({K_exp:.4f})",
           abs(results[main][d] - K_exp) < 2e-3, f"computed {results[main][d]:.4f}")
 seq = [results[main][d] for d in sorted(results[main])]
-check("required K increases with d and stays below the asymptotic 1/4",
+check("required kappa increases with d and stays below the asymptotic 1/4",
       all(a < b for a, b in zip(seq, seq[1:])) and seq[-1] < 0.25)
 
 # The Sudakov constant, bounded through the Sudakov-Fernique comparison with independent
@@ -149,10 +149,10 @@ check("E max of m standard normals >= 0.677 sqrt(log m), minimum at m = 2 (= 1/s
 C_S = math.sqrt(2) / min_ratio
 K_thm41 = 2 * C_S ** 2 * 2 ** 2
 K_audited = 2 * C_S ** 2 * 8 ** 2
-print(f"  C_S <= {C_S:.3f};  K = 2 C_S^2 C1^2 = {K_thm41:.1f} (C1 = 2, Theorem 4.1), "
+print(f"  C_S <= {C_S:.3f};  kappa = 2 C_S^2 C1^2 = {K_thm41:.1f} (C1 = 2, Theorem 4.1), "
       f"{K_audited:.0f} (C1 = 8, audited form)")
-check("C_S <= 2.09 and K <= 35 for the constant-2 route", C_S <= 2.09 and K_thm41 <= 35.0)
-check("both instantiations exceed the required K (no contradiction with the DLM family)",
+check("C_S <= 2.09 and kappa <= 35 for the constant-2 route", C_S <= 2.09 and K_thm41 <= 35.0)
+check("both instantiations exceed the required kappa (no contradiction with the DLM family)",
       K_thm41 >= worst_K and K_audited >= worst_K,
       f"required {max(results[main].values()):.4f} (finite d), 0.25 (asymptotic)")
 

@@ -15,10 +15,10 @@ diagonal sign matrix $`D_g`$, $`g\in\lbrace\pm1\rbrace^Q`$. A $`t`$-query archit
 fixed sequence of unitaries interleaved with $`t`$ oracle calls,
 
 ```math
-V(g)=A_t\,(D_g\otimes I_K)\,A_{t-1}\cdots(D_g\otimes I_K)\,A_0
+V(g)=A_t\,(D_g\otimes I_k)\,A_{t-1}\cdots(D_g\otimes I_k)\,A_0
 ```
 
-on $`\mathbb C^Q\otimes\mathbb C^K`$, where $`K`$ collects workspace and ancillas. Only $`g`$
+on $`\mathbb C^Q\otimes\mathbb C^k`$, where $`k`$ is the workspace dimension, ancillas included. Only $`g`$
 depends on the target. Write $`\iota\psi=\psi\otimes|0\rangle`$ for the clean input
 embedding and
 
@@ -137,8 +137,8 @@ T_g=\underbrace{\iota^{*}A_0^{*}}_{Y_{2t}}(D_g\otimes I)A_1^{*}\cdots(D_g\otimes
 \tag{3.1}
 ```
 
-exactly a member of $`\mathcal P_{2t}`$ on the register $`\mathbb C^Q\otimes\mathbb C^K`$ with
-address projectors $`P_j\otimes I_K`$: the same sign word inserted $`2t`$ times, every slot a
+exactly a member of $`\mathcal P_{2t}`$ on the register $`\mathbb C^Q\otimes\mathbb C^k`$ with
+address projectors $`P_j\otimes I_k`$: the same sign word inserted $`2t`$ times, every slot a
 contraction. Nothing about the architecture is used beyond unitarity of the $`A_i`$. The
 product is palindromic, $`T_g=Y_g^{*}\,A_t^{*}(X\otimes I)A_t\,Y_g`$ with
 $`Y_g=(D_g\otimes I)A_{t-1}\cdots(D_g\otimes I)A_0\iota`$.

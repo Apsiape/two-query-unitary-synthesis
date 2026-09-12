@@ -1,6 +1,6 @@
 # The Clean Two-Query Threshold for Unitary Synthesis
 
-**Seth Douglas** · version 1.0.1 · 2026-09-11
+**Seth Douglas** · version 1.0.2 · 2026-09-11
 
 A self-contained repository: one paper, two companion notes, eight machine verifiers,
 and a kernel-checked Lean spine.
@@ -27,6 +27,7 @@ two-query problem to a clean four-insertion width bound, which remains open.
 
 ```
 paper/paper.md                  the paper (GitHub-rendered mathematics)
+paper/paper.tex, paper.pdf      the same paper as LaTeX source and compiled PDF
 notes/permutation-transport.md  the matching upper bound, in full
 notes/garbage-to-clean.md       the garbage-model transfer, in full
 verify/run_all.py               runs all eight verifiers; exit 0 iff all pass
@@ -61,6 +62,14 @@ Every line printed must read `depends on axioms: [propext, Classical.choice, Quo
 The toolchain is pinned in `lean/lean-toolchain` and the Mathlib revision in
 `lean/lakefile.toml`; a first build downloads the Mathlib cache. What is and is not
 certified is stated in `lean/README.md`.
+
+To rebuild the PDF from source (standard packages only; three passes resolve the
+cross-references):
+
+```
+cd paper
+pdflatex paper.tex && pdflatex paper.tex && pdflatex paper.tex
+```
 
 ## Reading order
 
