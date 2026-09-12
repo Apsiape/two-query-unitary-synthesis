@@ -1,5 +1,5 @@
 """
-Verifier for the two-query capacity bound (audited form, Q2-W).
+Verifier for the two-query width bound in its audited real-selector form (paper, Corollary 4.2).
 
 Checks the four lines the theorem actually is:
 
@@ -12,7 +12,8 @@ with the SYMMETRIC weighting  d_p = lambda_p + mu_p,  lambda_p = ||b_p||^2,
 mu_p = ||c_p||^2.  That weighting is the theorem: either half alone satisfies
 one square function and breaks the other, which is checked explicitly below.
 
-Also checks Proposition 2.4 (lawfulness) and the zero-leverage lemma.
+Also checks Proposition 2.2 (lawfulness, isometric case), the zero-leverage lemma, and
+Remark 4.3 (the one-sided weightings fail on a substantial fraction of instances).
 
 Deterministic (seed 20260821), numpy only, exit 0 iff all pass.
 """
@@ -65,8 +66,8 @@ def leverages(B, C):
 print(__doc__.strip())
 print(f"\nseed = {SEED}\n")
 
-# ---------------------------------------------------------- Prop 2.4
-print("Proposition 2.4 -- lawfulness criterion")
+# ---------------------------------------------------------- Prop 2.2
+print("Proposition 2.2 -- lawfulness criterion (isometric C and W)")
 worst = 0.0
 for _ in range(150):
     Q, N = int(rng.integers(3, 10)), int(rng.integers(1, 4))
@@ -127,6 +128,7 @@ print("\n(iv) BOTH square functions <= I  -- and the symmetric weighting is why"
 print("     S1 = D^{-1/2}[conj(B^*B) o (W diag(mu/d) W^*)]D^{-1/2}")
 print("     S2 = D^{-1/2}[conj(CC^*) o (W^* diag(lam/d) W)]D^{-1/2}")
 w_sym, w_lam_only, w_mu_only = 0.0, 0.0, 0.0
+n_inst = n_lam_break = n_mu_break = 0
 for _ in range(200):
     Q, N = int(rng.integers(2, 10)), int(rng.integers(1, 5))
     B, W, C = contraction(N, Q), contraction(Q, Q), contraction(Q, N)
@@ -149,17 +151,27 @@ for _ in range(200):
     r = squares(lam + mu)                      # the symmetric weighting
     if r:
         w_sym = max(w_sym, max(0.0, r[0]-1.0), max(0.0, r[1]-1.0))
+    n_inst += 1
     r = squares(lam.copy())                    # lambda alone
     if r:
         w_lam_only = max(w_lam_only, max(r[0]-1.0, r[1]-1.0))
+        if max(r[0]-1.0, r[1]-1.0) > 1e-6:
+            n_lam_break += 1
     r = squares(mu.copy())                     # mu alone
     if r:
         w_mu_only = max(w_mu_only, max(r[0]-1.0, r[1]-1.0))
+        if max(r[0]-1.0, r[1]-1.0) > 1e-6:
+            n_mu_break += 1
 check("d = lambda + mu : BOTH square functions <= I", w_sym, tol=1e-9)
 print(f"     d = lambda alone : worst excess over I = {w_lam_only:+.3f}"
       f"   {'(BREAKS)' if w_lam_only > 1e-6 else ''}")
 print(f"     d = mu     alone : worst excess over I = {w_mu_only:+.3f}"
       f"   {'(BREAKS)' if w_mu_only > 1e-6 else ''}")
+frac_lam, frac_mu = n_lam_break / n_inst, n_mu_break / n_inst
+print(f"     Remark 4.3: lambda alone breaks on {frac_lam:.1%}, mu alone on {frac_mu:.1%} "
+      f"of {n_inst} instances (paper: 'a substantial fraction')")
+check("Remark 4.3: lambda alone fails domination on >= 10% of instances", max(0.0, 0.10 - frac_lam), tol=0.0)
+check("Remark 4.3: mu alone fails domination on >= 10% of instances", max(0.0, 0.10 - frac_mu), tol=0.0)
 
 # ---------------------------------------------------------- zero leverage
 print("\nZero-leverage lemma -- d_p = 0 kills BOTH row p and column p of M")

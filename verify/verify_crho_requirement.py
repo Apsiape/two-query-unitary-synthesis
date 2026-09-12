@@ -1,9 +1,11 @@
 """
 PIN C_rho against the Dong-Lombardi-Ma permutation family.
 
-Our q2 chain (q2-width-explainer.md sec.8):
-    log Pack_{rho sqrt N} <= C * w_2^2 / (rho^2 N),   w_2 <= C1 * min(N,Q) * sqrt(log 2Q)
-    =>  log Pack <= (K / rho^2) * N * log(2Q),        K := C * C1^2
+The chain (paper, Corollary 5.1):
+    log Pack_{rho sqrt N} <= 2 C_S^2 * w_2^2 / (rho^2 N),   w_2 <= C1 * min(N,Q) * sqrt(log 2Q)
+    =>  log Pack <= (K / rho^2) * N * log(2Q),              K := 2 C_S^2 C1^2
+where C_S is the Sudakov constant (eps sqrt(log Pack) <= C_S E sup) and C1 the width constant
+(2 for Theorem 4.1; 8 for the audited real-selector form).  Proposition 5.3 of the paper.
 
 DLM give a CLEAN TWO-QUERY algorithm for all d! permutation unitaries.
 That family is inside our class, so it must fit under the ceiling.
@@ -12,6 +14,18 @@ Requirement:   K  >=  rho^2 * logPack(rho) / (d * log(2Q))   for every rho, d.
 If K < that maximum, the theorem is FALSE -- refuted by a published construction.
 """
 import math
+import sys
+
+fails = []
+
+
+def check(name, ok, detail=""):
+    print(f"  [{'PASS' if ok else 'FAIL'}] {name}" + (f"  ({detail})" if detail else ""))
+    if not ok:
+        fails.append(name)
+
+
+results = {}
 
 def log_factorial(n):
     return math.lgamma(n + 1)
@@ -76,6 +90,7 @@ for label, Qof in CONVENTIONS.items():
                 best = (K, alpha, rho2, lp)
         K, alpha, rho2, lp = best
         worst_K = max(worst_K, K)
+        results.setdefault(label, {})[d] = K
         print(f"  {d:>8} {alpha:>11.3f} {rho2:>8.3f} {lp:>12.1f} "
               f"{denom:>12.1f} {K:>12.4f}")
     print(f"\n  -> REQUIRED  K = C * C1^2  >=  {worst_K:.4f}   (largest over d tested)")
@@ -96,17 +111,54 @@ for label, Qof in CONVENTIONS.items():
     print(f"     finite-d column above is converging up to this value\n")
 
 print("=" * 78)
-print("WHAT K DO WE ACTUALLY HAVE?")
+print("ASSERTIONS (paper, Proposition 5.3)")
 print("=" * 78)
-print("""
-  K = C * C1^2 where
-    C1 : noncommutative Khintchine,  E||sum g_i A_i|| <= C1 sqrt(log(d1+d2)) * sigma
-         standard constant  C1 = sqrt(2)   =>  C1^2 = 2
-    C  : Sudakov minoration in the form  eps * sqrt(log M) <= C * w
-         standard constants for this normalization lie in roughly  C in [2, 4]
+main = [k for k in results if "2d^2" in k][0]
+expected = {16: 0.1256, 256: 0.1591, 4096: 0.1849, 65536: 0.1999}
+for d, K_exp in expected.items():
+    check(f"required K at d = {d} matches the paper's table ({K_exp:.4f})",
+          abs(results[main][d] - K_exp) < 2e-3, f"computed {results[main][d]:.4f}")
+seq = [results[main][d] for d in sorted(results[main])]
+check("required K increases with d and stays below the asymptotic 1/4",
+      all(a < b for a, b in zip(seq, seq[1:])) and seq[-1] < 0.25)
 
-  =>  K  in roughly  [4, 8]
-""")
-for Kc in [2.0, 4.0, 6.0, 8.0]:
-    print(f"    K = {Kc:>4.1f}  -> margin vs Q=2d^2 requirement (~1.0): "
-          f"{Kc/1.0:>5.1f}x ;  vs Q=d requirement (~2.0): {Kc/2.0:>5.1f}x")
+# The Sudakov constant, bounded through the Sudakov-Fernique comparison with independent
+# N(0, eps^2/2) variables:  E sup X  >=  (eps/sqrt 2) * E max_m g_i,  and
+# E max of m standard normals  =  int x * m * phi(x) * Phi(x)^(m-1) dx  >=  0.677 sqrt(log m)
+# for every m >= 2 (the minimum of the ratio is at m = 2).  Hence eps sqrt(log m) <= C_S E sup
+# with  C_S = sqrt(2) / 0.677 = 2.09.
+
+
+def sudakov_fernique_ratio(m, n=400000, x_max=12.0):
+    xs = [-x_max + 2 * x_max * (i + 0.5) / n for i in range(n)]
+    h = 2 * x_max / n
+    tot = 0.0
+    for x in xs:
+        ph = math.exp(-0.5 * x * x) / math.sqrt(2 * math.pi)
+        Ph = 0.5 * (1.0 + math.erf(x / math.sqrt(2)))
+        tot += x * m * ph * Ph ** (m - 1) * h
+    return tot / math.sqrt(math.log(m))
+
+
+ratios = {m: sudakov_fernique_ratio(m, n=60000) for m in (2, 3, 4, 8, 16, 64, 256)}
+min_ratio = min(ratios.values())
+print("  E max_m / sqrt(log m):", ", ".join(f"m={m}: {r:.4f}" for m, r in ratios.items()))
+check("E max of m standard normals >= 0.677 sqrt(log m), minimum at m = 2 (= 1/sqrt(pi log 2))",
+      min_ratio >= 0.677 and abs(ratios[2] - 1 / math.sqrt(math.pi * math.log(2))) < 1e-3,
+      f"min ratio {min_ratio:.4f}")
+C_S = math.sqrt(2) / min_ratio
+K_thm41 = 2 * C_S ** 2 * 2 ** 2
+K_audited = 2 * C_S ** 2 * 8 ** 2
+print(f"  C_S <= {C_S:.3f};  K = 2 C_S^2 C1^2 = {K_thm41:.1f} (C1 = 2, Theorem 4.1), "
+      f"{K_audited:.0f} (C1 = 8, audited form)")
+check("C_S <= 2.09 and K <= 35 for the constant-2 route", C_S <= 2.09 and K_thm41 <= 35.0)
+check("both instantiations exceed the required K (no contradiction with the DLM family)",
+      K_thm41 >= worst_K and K_audited >= worst_K,
+      f"required {max(results[main].values()):.4f} (finite d), 0.25 (asymptotic)")
+
+print("-" * 78)
+if fails:
+    print("verify_crho_requirement.py: FAIL -> " + ", ".join(fails))
+    sys.exit(1)
+print("verify_crho_requirement.py: PASS")
+sys.exit(0)

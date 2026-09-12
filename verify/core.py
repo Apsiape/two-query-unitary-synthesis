@@ -1,4 +1,5 @@
-"""Core helpers for the Lookup-or-Amplify dichotomy test.
+"""Core helpers for verify_decisive_pair.py (Proposition 3.2: the three-insertion class with a
+one-dimensional target).
 
 Architecture: (B, W1, W2, C).  W1,W2 in U(Q); C: Q x N isometry (C*C=I_N);
 B: N x Q coisometry (B B* = I_N).  P_B = B* B rank-N projection.

@@ -71,7 +71,8 @@ s^2:=\frac1K\sum_aq_a^2,\qquad
 e^2:=\mathbb E\bigl(X-q_{Q(X)}\bigr)^2=1-s^2 .
 ```
 
-**Lemma 2.1 (quantizer error).** *For $`K\ge4`$, $`e^2\le32K^{-1/3}`$.*
+**Lemma 2.1 (quantizer error).** *For $`K\ge4`$, $`e^2\le32K^{-1/3}`$ (natural logarithms
+throughout).*
 
 *Proof.* Write $`g(u)=\Phi^{-1}(u)`$ for the normal quantile function and $`g_T`$ for its
 clipping to $`[-T,T]`$. The clipped function is Lipschitz with constant
@@ -151,7 +152,7 @@ D_{ba}=M\,\Pr(A=a,\,B=b)
 ```
 
 is doubly stochastic and admits a Birkhoff decomposition
-$`D=\sum_{\ell=1}^Lp_\ell P_{\pi_\ell}`$, $`L\le M^2`$, into permutation matrices. (Hall's
+$`D=\sum_{\ell=1}^{m}p_\ell P_{\pi_\ell}`$, $`m\le M^2`$, into permutation matrices. (Hall's
 condition holds on the support; pick a perfect matching, subtract its smallest entry, and
 repeat. Row and column sums stay equal and one positive entry disappears each round, so at
 most $`M^2`$ rounds occur and the subtracted weights sum to one.)
@@ -181,18 +182,20 @@ bounded. $`\square`$
 Equation (1) is an operator bound, valid for every input at once, not an average-case
 statement. No measurement of the input has entered. Check (3) of the verifier estimates the
 left side by Monte Carlo at $`N=2`$, $`K=4`$ and confirms both the operator bound and the
-identity between the coupling reading and the operator reading (check (4), second line).
+identity between the coupling reading and the operator reading; check (5) forms the left
+side from a real coupling and a real Birkhoff decomposition at $`N=1`$, $`K=4`$.
 
 ---
 
 ## 5. One coherent permutation from the mixture
 
 Set $`\delta=\varepsilon/2`$ and take $`K`$ with $`e^2\le\delta^2/100`$. Choose a power of
-two $`R\ge100M^2/\delta^2`$ and approximate the weights by integer multiplicities
-$`k_\ell/R`$ with $`\sum_\ell k_\ell=R`$ and $`\sum_\ell|p_\ell-k_\ell/R|\le2L/R`$ (round
-each weight down and distribute the remaining slots). Make a list of $`R`$ permutations
-containing $`k_\ell`$ copies of $`\pi_\ell`$ and define one permutation of
-$`[R]\times\Omega`$:
+two $`R\ge100M^2/\delta^2`$; since $`m\le M^2`$, $`R`$ is fixed by $`M`$ and $`\delta`$ alone
+and does not depend on the target, which is what keeps the enlarged encoding below
+target-independent. Approximate the weights by integer multiplicities $`k_\ell/R`$ with
+$`\sum_\ell k_\ell=R`$ and $`\sum_\ell|p_\ell-k_\ell/R|\le2m/R`$ (round each weight down and
+distribute the remaining slots). Make a list of $`R`$ permutations containing $`k_\ell`$
+copies of $`\pi_\ell`$ and define one permutation of $`[R]\times\Omega`$:
 
 ```math
 \Pi_U(j,a)=(j,\pi_{\ell(j)}(a)).
@@ -212,10 +215,10 @@ $`\tilde E\psi=|+_R\rangle\otimes E\psi`$ with $`|+_R\rangle=R^{-1/2}\sum_j|j\ra
 and the $`|j\rangle`$ are orthonormal. $`\square`$
 
 Since $`\|\Delta_\pi\|\le2`$, replacing $`p_\ell`$ by $`k_\ell/R`$ in (1) changes the left
-side by at most $`4\sum_\ell|p_\ell-k_\ell/R|\le8L/R`$ in operator norm, so
+side by at most $`4\sum_\ell|p_\ell-k_\ell/R|\le8m/R`$ in operator norm, so
 
 ```math
-\bigl\|\Pi_U\tilde E-\tilde EU\bigr\|_{\mathrm{op}}^2\le\frac{4e^2}{s^2}+\frac{8L}{R}<\delta^2 .
+\bigl\|\Pi_U\tilde E-\tilde EU\bigr\|_{\mathrm{op}}^2\le\frac{4e^2}{s^2}+\frac{8m}{R}<\delta^2 .
 \tag{2}
 ```
 
@@ -223,7 +226,9 @@ The label $`j`$ is never measured. Equation (2) says it returns, up to $`\delta`
 same uniform state $`|+_R\rangle`$, uncorrelated with the input, and the inverse encoder
 restores the coordinate registers. All target dependence sits in the classical permutation
 $`\Pi_U`$. Check (4) of the verifier confirms Lemma 5.1 on a synthetic Birkhoff mixture
-with $`M=256`$, $`R=8`$.
+with $`M=256`$, $`R=8`$, and check (5) confirms it, together with the inequality above, on a
+real coupling, a real Birkhoff decomposition and the real $`\Pi_U`$ at $`N=1`$, $`K=4`$,
+$`R=2^{14}`$.
 
 ---
 
@@ -243,13 +248,20 @@ turn it into $`|z\rangle|b\rangle\mapsto|z\rangle|b\oplus\Pi_U(z)\rangle`$, cohe
 arbitrary superpositions. Starting from $`b=0`$: query the forward table to obtain
 $`|z,\Pi_U(z)\rangle`$; swap the registers; query the inverse table to obtain
 $`|\Pi_U(z),0\rangle`$. That is $`\Pi_U`$ with two Boolean queries, $`O(t)`$ extra gates
-and $`O(t)`$ scratch qubits, both directions being tagged regions of the same table.
+and $`O(t)`$ scratch qubits, both directions being tagged regions of the same table. Because
+the direction bit places the state in the $`d=0`$ half of the table at the first query and in
+the $`d=1`$ half at the second, one $`\pm1`$ sign word over $`(d,z,y)`$ serves both queries, and
+the whole circuit is of the repeated-sign-word form $`T_g=BD_gWD_gC`$ of the paper's
+Definition 2.1 with $`B,W,C`$ independent of $`U`$.
 
 **Total error.** (2), the encoder error and the decoder error give isometry error at most
-$`\delta+2(\varepsilon/8)=3\varepsilon/4`$. Two isometries at operator distance $`\alpha`$
-induce channels at half-diamond distance at most $`\alpha`$: tensoring with a reference
-preserves the operator bound, the trace distance of the resulting pure states is at most
-their vector distance, and convexity covers mixed inputs. The table is fixed before the
+$`\delta+2(\varepsilon/8)=3\varepsilon/4`$; compressing to the target register is a
+contraction, so the realized map on the target register is within operator-norm distance
+$`3\varepsilon/4`$ of $`U`$ as well. Two isometries at operator distance $`\alpha`$ induce
+channels at half-diamond distance at most $`\alpha`$: tensoring with a reference preserves
+the operator bound, the trace distance of the resulting pure states is at most their vector
+distance, tracing out the environment does not increase it, and convexity covers mixed
+inputs. The table is fixed before the
 input arrives; the online circuit receives no advice and no target-dependent gate.
 
 ---

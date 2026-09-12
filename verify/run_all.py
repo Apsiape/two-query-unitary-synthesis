@@ -16,23 +16,26 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SUITE = [
     ("verify_proof_steps.py",
      "Corollary 4.2, audited real-selector form: exact expansion, pointwise absorption over "
-     "the whole sign cube, Schur domination; Proposition 2.2 (corrected unitarity "
-     "criterion); zero-leverage lemma (Remark 4.4)"),
+     "the whole sign cube, Schur domination; Proposition 2.2 (isometric case); "
+     "zero-leverage lemma (Remark 4.4); Remark 4.3 (one-sided weightings fail)"),
     ("verify_complex_phase.py",
-     "Theorem 4.1, unimodular-selector form: expansion, torus absorption, closed-form "
-     "variance operators vs Monte Carlo and their domination, corrected T*T identity"),
+     "Theorem 4.1, unimodular-selector form: expansion, torus absorption (random points and "
+     "the alternating-maximisation supremum), closed-form variance operators vs Monte Carlo "
+     "and their domination; Proposition 2.2 (three-term identity, contractive C and W)"),
     ("verify_permutation_family.py",
      "Proposition 6.1 -- the Dong-Lombardi-Ma permutation family lies in the class and "
      "fills a constant fraction of the ceiling"),
     ("verify_crho_requirement.py",
      "Proposition 5.3 -- the constant the permutation family forces"),
     ("verify_decisive_pair.py",
-     "Proposition 3.1 -- the decisive pair (2 vs 16 targets, identical pre-final data)"),
+     "Proposition 3.1 (depth two: final layer invisible, exhaustive) and Proposition 3.2 "
+     "(the decisive pair in the three-insertion class, N = 1: 2 vs 16 targets)"),
     ("verify_address_compression.py",
-     "Theorem 6.3 -- the address-respecting compression behind the input-length bound"),
+     "Theorem 6.3 -- the address-respecting compression behind the input-length bound, "
+     "including two different address decompositions"),
     ("verify_koopman_transport.py",
-     "Theorem 6.4 -- the matching upper bound: quantizer, isometry, coupling error, "
-     "coherent-label identity, at small N"),
+     "Theorem 6.4 -- the matching upper bound: quantizer chain, isometry, coupling error, "
+     "coherent-label identity, and an end-to-end run at N = 1"),
     ("verify_conjugation_transfer.py",
      "Section 7 -- junk-blindness lemma and the conjugation transfer identities"),
 ]

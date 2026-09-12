@@ -1,4 +1,4 @@
-"""Theorem 1 (independent unimodular selectors) -- machine checks.
+"""Theorem 4.1 (independent unimodular selectors) -- machine checks.
 
 Architecture: T_{x,y} = B D_x W D_y C with B (N x Q), W (Q x Q), C (Q x N) arbitrary
 contractions, D_x = diag(x), D_y = diag(y), x, y in the torus T^Q (|x_p| = |y_q| = 1).
@@ -12,18 +12,21 @@ Checks (all deterministic, seed fixed):
  (a) exact expansion   Tr(G^* T_{x,y}) = x^T M y  with  M_{pq} = W_{pq} (c_q G^* b_p),
      M independent of x and y -- for arbitrary complex x, y;
  (b) pointwise absorption  |x^T M y| <= ||B||_F ||C||_F ||K||_op  for unimodular x, y,
-     where K = Lam^{-1/2} M Mu^{-1/2} (zero-leverage coordinates dropped);
+     where K = Lam^{-1/2} M Mu^{-1/2} (zero-leverage coordinates dropped); tested on random
+     torus points AND at the torus supremum found by alternating maximisation;
  (c) the two variance operators of the matrix Gaussian series K have the closed forms
         E K K^* = Lam^{-1/2} [ conj(B^* B) o (W P_mu W^*) ] Lam^{-1/2},
         E K^* K = Mu^{-1/2}  [ conj(C C^*) o (W^* P_lam W) ] Mu^{-1/2},
      agree with Monte Carlo, and are each dominated by the corresponding support projection
      (exact eigenvalue check on the closed forms);
  (d) the real-selector case: |Re Tr(G^* T_g)| <= |g^T M g| for every sign word g;
- (e) the corrected unitarity identity for a merely contractive middle W:
-        T^* T = I - C^* D (I - W^* W) D C - Psi^* Pi Psi,   Psi = D W D C,  Pi = I - B^* B,
-     and the failure of the uncorrected form when W^* W != I;
- (f) sanity display: the empirical E||K|| / sqrt(log 2Q) against the analytic cap 2
-     (Tropp's bound for a complex Gaussian series with variance parameter <= 1).
+ (e) the three-term unitarity identity (Proposition 2.2) for contractive C and W:
+        T^* T = I - (I - C^* C) - C^* D (I - W^* W) D C - Psi^* Pi Psi,
+        Psi = D W D C,  Pi = I - B^* B,
+     and the failure of the shorter forms when C^* C != I or W^* W != I;
+ (f) the empirical E||K|| / sqrt(log 2Q) against the proved cap sqrt(2) (Tropp's bound for
+     the pooled real series of 2N^2 terms with variance parameter <= 1; the paper quotes
+     the looser 2 obtained by the triangle inequality).
 
 Exit 0 iff every check passes.  numpy only.
 """
@@ -67,7 +70,7 @@ def check(name, ok, detail=""):
 
 
 print("=" * 74)
-print("verify_complex_phase.py -- Theorem 1 with independent unimodular selectors")
+print("verify_complex_phase.py -- Theorem 4.1 with independent unimodular selectors")
 print("=" * 74)
 
 # ---------------------------------------------------------------- (a), (b), (c), (d)
@@ -76,6 +79,23 @@ max_mc_dev = 0.0
 absorption_violations = 0
 absorption_checks = 0
 worst_absorption_ratio = 0.0
+sup_violations = 0
+worst_sup_ratio = 0.0
+
+
+def torus_sup(M, iters=40):
+    """Alternating maximisation of |x^T M y| over the torus: for fixed y the best x is the
+    conjugate phase of M y (value sum_p |(M y)_p|), and symmetrically for y."""
+    Q1, Q2 = M.shape
+    y = unimodular(Q2)
+    best = 0.0
+    for _ in range(iters):
+        v = M @ y
+        x = np.exp(-1j * np.angle(v))
+        u = M.T @ x
+        y = np.exp(-1j * np.angle(u))
+        best = max(best, abs(x @ M @ y))
+    return best
 real_case_violations = 0
 domination_ok = True
 
@@ -119,6 +139,11 @@ for trial in range(trials):
                     absorption_violations += 1
                 if bound > 1e-12:
                     worst_absorption_ratio = max(worst_absorption_ratio, val / bound)
+            sup_val = max(torus_sup(M) for _ in range(3))
+            if sup_val > fro * Kop + 1e-9:
+                sup_violations += 1
+            if fro * Kop > 1e-12:
+                worst_sup_ratio = max(worst_sup_ratio, sup_val / (fro * Kop))
             # (d) real selectors: |Re Tr(G^* T_g)| <= |g^T M g|
             g = rng.choice([1.0, -1.0], Q)
             Tg = B @ np.diag(g) @ W @ np.diag(g) @ C
@@ -135,6 +160,8 @@ for trial in range(trials):
 
 check("(a) exact expansion Tr(G^* T_{x,y}) = x^T M y, complex x,y",
       max_expansion_dev < 1e-9, f"max deviation {max_expansion_dev:.2e}")
+check("(b) pointwise absorption at the torus supremum (alternating maximisation)",
+      sup_violations == 0, f"0 violations expected, worst sup/bound {worst_sup_ratio:.4f}")
 check("(b) pointwise absorption |x^T M y| <= ||B||_F ||C||_F ||K|| on the torus",
       absorption_violations == 0,
       f"{absorption_checks} checks, 0 violations expected, worst ratio {worst_absorption_ratio:.3f}")
@@ -147,26 +174,42 @@ check("(d) real selectors are the special case x = y = g",
 
 # ---------------------------------------------------------------- (e)
 N, Q = 3, 6
-Ciso, _ = np.linalg.qr(rng.normal(size=(Q, N)) + 1j * rng.normal(size=(Q, N)))
-Bco = Ciso.conj().T
+Cc = contraction(Q, N)                       # strictly contractive: C^* C != I
+Bc = contraction(N, Q)
 Wc = contraction(Q, Q)                       # strictly contractive: W^* W != I
 g = rng.choice([1.0, -1.0], Q)
 D = np.diag(g)
-T = Bco @ D @ Wc @ D @ Ciso
-Psi = D @ Wc @ D @ Ciso
-Pi = np.eye(Q) - Bco.conj().T @ Bco
+T = Bc @ D @ Wc @ D @ Cc
+Psi = D @ Wc @ D @ Cc
+Pi = np.eye(Q) - Bc.conj().T @ Bc
 lhs = T.conj().T @ T
-rhs_corrected = (np.eye(N) - Ciso.conj().T @ D @ (np.eye(Q) - Wc.conj().T @ Wc) @ D @ Ciso
-                 - Psi.conj().T @ Pi @ Psi)
-rhs_uncorrected = np.eye(N) - Psi.conj().T @ Pi @ Psi
-check("(e) corrected T^*T identity holds for a contractive middle",
-      np.allclose(lhs, rhs_corrected, atol=1e-10))
-check("(e) the uncorrected identity fails when W^*W != I (as it must)",
-      not np.allclose(lhs, rhs_uncorrected, atol=1e-6),
-      f"max discrepancy {np.abs(lhs - rhs_uncorrected).max():.2e}")
+term_C = np.eye(N) - Cc.conj().T @ Cc
+term_W = Cc.conj().T @ D @ (np.eye(Q) - Wc.conj().T @ Wc) @ D @ Cc
+term_B = Psi.conj().T @ Pi @ Psi
+rhs_three = np.eye(N) - term_C - term_W - term_B
+rhs_two = np.eye(N) - term_W - term_B         # the earlier draft's form (needs C^* C = I)
+rhs_one = np.eye(N) - term_B                  # needs C^* C = I and W^* W = I
+psd_ok = all(np.linalg.eigvalsh((X + X.conj().T) / 2).min() > -1e-10
+             for X in (term_C, term_W, term_B))
+check("(e) three-term T^*T identity holds for contractive C, W (Proposition 2.2)",
+      np.allclose(lhs, rhs_three, atol=1e-10))
+check("(e) all three subtracted terms are positive semidefinite", psd_ok)
+check("(e) the two-term form fails when C^*C != I (as it must)",
+      not np.allclose(lhs, rhs_two, atol=1e-6),
+      f"max discrepancy {np.abs(lhs - rhs_two).max():.2e}")
+check("(e) the one-term form fails when W^*W != I (as it must)",
+      not np.allclose(lhs, rhs_one, atol=1e-6),
+      f"max discrepancy {np.abs(lhs - rhs_one).max():.2e}")
+# the isometric special case reduces to the one-term criterion
+Ciso, _ = np.linalg.qr(rng.normal(size=(Q, N)) + 1j * rng.normal(size=(Q, N)))
+Wu, _ = np.linalg.qr(rng.normal(size=(Q, Q)) + 1j * rng.normal(size=(Q, Q)))
+Psi_i = D @ Wu @ D @ Ciso
+T_i = Bc @ Psi_i
+check("(e) isometric C, W: T^*T = I - Psi^* Pi Psi exactly",
+      np.allclose(T_i.conj().T @ T_i, np.eye(N) - Psi_i.conj().T @ Pi @ Psi_i, atol=1e-10))
 
 # ---------------------------------------------------------------- (f)
-print("  (f) empirical E||K|| / sqrt(log 2Q), analytic cap 2 (Tropp, complex series, v <= 1):")
+print("  (f) empirical E||K|| / sqrt(log 2Q), proved cap sqrt(2) (pooled real series, v <= 1):")
 ratio_ok = True
 for (N, Q) in [(4, 8), (8, 16), (8, 32)]:
     Ciso, _ = np.linalg.qr(rng.normal(size=(Q, N)) + 1j * rng.normal(size=(Q, N)))
@@ -181,9 +224,9 @@ for (N, Q) in [(4, 8), (8, 16), (8, 32)]:
         K = Li @ (Wu * (Ciso @ G.conj().T @ Bco).T) @ Mi
         norms.append(np.linalg.norm(K, 2))
     ratio = np.mean(norms) / np.sqrt(np.log(2 * Q))
-    ratio_ok &= ratio <= 2.0
+    ratio_ok &= ratio <= np.sqrt(2.0)
     print(f"      N={N:2d} Q={Q:2d}: E||K|| = {np.mean(norms):.3f}, ratio = {ratio:.3f}")
-check("(f) empirical ratio within the analytic cap 2", ratio_ok)
+check("(f) empirical ratio within the proved cap sqrt(2) (hence within the quoted 2)", ratio_ok)
 
 print("-" * 74)
 if fails:

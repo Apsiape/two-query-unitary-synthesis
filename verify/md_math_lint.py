@@ -11,6 +11,8 @@ for path in sys.argv[1:]:
     if "$$" in text:
         print(f"{path}: bare $$ display math - use ```math fences"); bad += 1
     for i, l in enumerate(text.splitlines(), 1):
+        if "\t" in l:
+            print(f"{path}:{i}: tab character (a \\t escape eaten by a script?)"); bad += 1
         if re.search(r"(?<![`$])\$(?![`$])[^$]*(?<![`$])\$(?![`$])", l) and "```" not in l:
             print(f"{path}:{i}: unprotected inline $...$ - use $`...`$"); bad += 1
         if r"\!\left" in l or r"\!\right" in l or r"\!\Big" in l:

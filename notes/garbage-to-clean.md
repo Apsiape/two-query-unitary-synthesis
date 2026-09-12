@@ -39,8 +39,8 @@ in what is demanded of $`S_g`$.
   register.
 
 **The bridge.** The keep form is derived from the discard form. A unitary channel has Kraus
-rank one, so continuity of the Stinespring representation [KSW08] yields a unitary $`W`$ on
-the junk register with
+rank one, so continuity of the Stinespring representation yields a unitary $`W`$ on the junk
+register with
 
 ```math
 \bigl\|S_g\psi-(U_g\psi)\otimes|j_g\rangle\bigr\|\le c\sqrt\varepsilon
@@ -48,26 +48,34 @@ the junk register with
 \tag{1.1}
 ```
 
-with an absolute constant $`c`$. Everything below is proved for the keep form and
-inherited by the discard form at the cost of $`O(\sqrt\varepsilon)`$ in operator norm.
+with an absolute constant $`c`$: [KSW08] gives $`W`$ on a common enlarged environment, which
+suffices because embedding the junk register isometrically in a larger one changes none of
+the conjugated objects below, and [vE23] (arXiv:2308.15389) gives $`W`$ on the junk register
+itself with $`c=\sqrt2`$ for the Kraus-rank-one case. Everything below is proved for the keep
+form and inherited by the discard form at the cost of $`O(\sqrt\varepsilon)`$ in operator
+norm.
 
 **The insertion classes.** Clean-model capacity theorems are proved for the abstract
 $`s`$-insertion class
 
 ```math
-\mathcal P_s=\bigl\lbrace\,g\mapsto M_sD_gM_{s-1}\cdots D_gM_0:\ \|M_i\|_{\mathrm{op}}\le1\,\bigr\rbrace ,
+\mathcal P_s=\bigl\lbrace\,g\mapsto Y_sD_gY_{s-1}\cdots D_gY_0:\ \|Y_i\|_{\mathrm{op}}\le1\,\bigr\rbrace ,
 ```
 
 arbitrary contractions in every slot, rectangular allowed, and bound its packing entropy at
-the normalized Frobenius scale $`\rho\sqrt N`$. The proved $`s=2`$ case is Corollary 5.1 of
-the paper:
+the normalized Frobenius scale $`\rho\sqrt N`$. The sign word acts through address projectors
+of arbitrary rank, $`D_g=\sum_{j\le Q}g_jP_j`$ on a register of arbitrary dimension, as in
+Theorem 6.3 of the paper, so that a bound is stated in terms of the address count $`Q`$ and
+not of the register dimension. The proved $`s=2`$ case is Theorem 6.3 of the paper:
 
 ```math
-\log\mathrm{Pack}_{\rho\sqrt N}\lbrace T_g\rbrace\le C_\rho\,N\log(2Q).
+\log\mathrm{Pack}_{\rho\sqrt N}\lbrace T_g\rbrace\le C_\rho\,N\log(2QN).
 \tag{1.2}
 ```
 
-A **clean-$`s`$ capacity theorem** means a statement of this shape for $`\mathcal P_s`$.
+A **clean-$`s`$ capacity theorem** means a statement of the shape
+$`\log\mathrm{Pack}_{\rho\sqrt N}\le C_\rho N\phi(Q)`$ for $`\mathcal P_s`$, with $`\phi`$ a
+function of the address count.
 Since $`D_g`$ is linear in $`g`$ and $`g_p^2=1`$, every entry of a member of $`\mathcal P_s`$
 is a multilinear polynomial of degree at most $`s`$ in the signs: a $`t`$-query architecture
 produces a degree-$`t`$ object, and clean-$`s`$ tools are degree-$`s`$ tools.
@@ -98,7 +106,8 @@ for every $`\theta`$. For a real-linear $`L`$ take $`\theta=\pi`$. $`\square`$
 
 **Consequence.** The width-and-Sudakov machinery of the paper prices a Gaussian process
 *linear* in the realized operator. By the lemma no junk-blind linear functional of a garbage
-packet is nonzero; the smallest junk-blind invariant is (2.1), of degree $`2t`$. Hence no
+packet is nonzero; the invariants that factor through the channel are quadratic, the basic
+one being (2.1), of degree $`2t`$. Hence no
 junk-blind width argument can attack garbage-$`t`$ below degree $`2t`$. In particular there
 is no route from the degree-2 theorem straight to an unrestricted garbage-2 bound by any
 argument of this type. The only way to stay at degree $`t`$ is to break junk-blindness by
@@ -108,9 +117,10 @@ fixing a reference vector in the junk register, which is what Section 5 does, at
 
 ## 3. The conjugation transfer
 
-**Theorem 3.1 (Theorem 7.2 of the paper).** *A clean-$`2t`$ capacity theorem implies the
-garbage-$`t`$ impossibility. The transfer depends on no junk dimension, changes no oracle,
-and tolerates a constant diamond error. At $`t=2`$ the target is clean-4.*
+**Theorem 3.1 (Theorem 7.2 of the paper).** *A clean-$`2t`$ capacity theorem with rate
+$`\phi`$ implies that no universal garbage-$`t`$ synthesizer exists with $`\phi(Q)=o(N)`$. The
+transfer depends on no workspace or junk dimension, changes no oracle, and tolerates a
+constant diamond error. At $`t=2`$ the target is clean-4.*
 
 *Proof.* Four steps.
 
@@ -123,12 +133,15 @@ $`T_g:=S_g^{*}(X\otimes I_D)S_g`$. Because $`D_g\otimes I`$ is Hermitian, expand
 $`S_g^{*}`$ by reversal gives
 
 ```math
-T_g=\underbrace{\iota^{*}A_0^{*}}_{M_0'}(D_g\otimes I)A_1^{*}\cdots(D_g\otimes I)\underbrace{A_t^{*}(X\otimes I_D)A_t}_{\text{middle slot}}(D_g\otimes I)\cdots A_1(D_g\otimes I)\underbrace{A_0\iota}_{M_0},
+T_g=\underbrace{\iota^{*}A_0^{*}}_{Y_{2t}}(D_g\otimes I)A_1^{*}\cdots(D_g\otimes I)\underbrace{A_t^{*}(X\otimes I_D)A_t}_{Y_t\ \text{(middle slot)}}(D_g\otimes I)\cdots A_1(D_g\otimes I)\underbrace{A_0\iota}_{Y_0},
 \tag{3.1}
 ```
 
-exactly a member of $`\mathcal P_{2t}`$: the same sign word inserted $`2t`$ times, every slot a
-contraction. Nothing about the architecture is used beyond unitarity of the $`A_i`$.
+exactly a member of $`\mathcal P_{2t}`$ on the register $`\mathbb C^Q\otimes\mathbb C^K`$ with
+address projectors $`P_j\otimes I_K`$: the same sign word inserted $`2t`$ times, every slot a
+contraction. Nothing about the architecture is used beyond unitarity of the $`A_i`$. The
+product is palindromic, $`T_g=Y_g^{*}\,A_t^{*}(X\otimes I)A_t\,Y_g`$ with
+$`Y_g=(D_g\otimes I)A_{t-1}\cdots(D_g\otimes I)A_0\iota`$.
 `verify_conjugation_transfer.py` checks (3.1) as a four-insertion product at $`t=2`$.
 
 **(c) Junk cancels identically.** In the keep form, by (2.1),
@@ -140,12 +153,12 @@ normalized Frobenius scale, absorbed by halving $`\rho`$.
 **(d) The conjugation orbit has full packing entropy.** Take $`X=R`$ a balanced reflection
 ($`R=R^{*}`$, $`R^2=I`$, $`\mathrm{Tr}R=0`$). Then $`U\mapsto U^{*}RU`$ maps onto the balanced
 reflections, a copy of the Grassmannian $`\mathrm{Gr}(N/2,N)`$ of real dimension $`N^2/2`$,
-every image point having Frobenius norm $`\sqrt N`$. Volume counting there gives a
-$`\rho\sqrt N`$-separated set of $`e^{c_\rho N^2}`$ points, each of the form $`U_i^{*}RU_i`$.
-A universal garbage-$`t`$ synthesizer must synthesize $`U_1,\dots,U_M`$, so the single
-family $`\lbrace T_g\rbrace\subset\mathcal P_{2t}`$ contains an $`e^{c_\rho N^2}`$-point separated
-code, while a clean-$`2t`$ capacity theorem caps the same quantity by
-$`C_\rho N\,\mathrm{polylog}(Q)=o(N^2)`$ when $`\log Q=o(N)`$. $`\square`$
+every image point having Frobenius norm $`\sqrt N`$. Volume counting there gives, for
+$`\rho`$ below an absolute constant, a $`\rho\sqrt N`$-separated set of $`e^{c_\rho N^2}`$
+points, each of the form $`U_i^{*}RU_i`$. A universal garbage-$`t`$ synthesizer must
+synthesize $`U_1,\dots,U_m`$, so the single family $`\lbrace T_g\rbrace\subset\mathcal P_{2t}`$
+contains an $`e^{c_\rho N^2}`$-point separated code, while a clean-$`2t`$ capacity theorem
+caps the same quantity by $`C_\rho N\phi(Q)=o(N^2)`$ when $`\phi(Q)=o(N)`$. $`\square`$
 
 **Remarks.**
 
@@ -155,7 +168,7 @@ $`C_\rho N\,\mathrm{polylog}(Q)=o(N^2)`$ when $`\log Q=o(N)`$. $`\square`$
 - No circuit is appended and no second oracle is queried; the transfer re-reads the
   architecture's own data. It is therefore valid in fixed-oracle and random-oracle models
   alike.
-- **Calibration at $`t=1`$.** There $`2t=2`$ and the hypothesis is Theorem 4.1 of the paper,
+- **Calibration at $`t=1`$.** There $`2t=2`$ and the hypothesis is Theorem 6.3 of the paper,
   so the transfer delivers an unrestricted garbage-model one-query bound at no overhead
   (Corollary 7.3 of the paper). This is consistent with the fact that the one-query bound
   of [LMW24] is stated in the discard model with clean-model tools: at $`t=1`$
@@ -172,10 +185,12 @@ $`T_g`$ of (3.1) are Hermitian contractions.
 The obstruction is concrete. In the degree-2 proof the sign supremum is absorbed because
 the leverage-weighted selector vectors have selector-independent norms: every slot touches
 an endpoint, so the whole coefficient mass is priced on the endpoint budget
-$`\|B\|_F^2+\|C\|_F^2`$. At degree 4 the two inner sign layers touch no endpoint, and their
-coefficient mass is of order $`Q^2`$ rather than $`O(\min(N,Q))`$. What is needed is a
-domination certificate that reprices the inner layers on the endpoint budget alone. This
-is open, and the paper claims nothing about it.
+$`\|B\|_F^2+\|C\|_F^2`$. By the palindromic form it suffices to bound the sandwich subclass
+$`Y_g^{*}XY_g`$ with $`Y_g`$ a two-insertion packet whose left endpoint is the identity of
+the full register, and there the endpoint budget is the register dimension itself: the two
+inner sign layers are not priced by anything of order $`N`$. What is needed is a domination
+certificate that reprices the inner layers on the target budget alone. This is open, and
+the paper claims nothing about it.
 
 ---
 

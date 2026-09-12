@@ -1,4 +1,4 @@
-"""Section 8 (garbage model) -- the junk-blindness lemma and the conjugation transfer.
+"""Section 7 (garbage model) -- the junk-blindness lemma and the conjugation transfer.
 
 Model: a t-query circuit V(g) = A_t (D_g (x) I_K) ... (D_g (x) I_K) A_0 on C^N (x) C^K, with A_i
 fixed unitaries, restricted to the clean input:  S_g = V(g) iota,  iota psi = psi (x) |0>.
@@ -97,6 +97,10 @@ val = L(S)
 invariant = all(abs(L(np.exp(1j * th) * S) - val) < 1e-12 for th in (np.pi / 3, np.pi, 1.0))
 check("(4) a nonzero linear functional is not junk-blind (phase rotation changes it)",
       abs(val) > 1e-8 and not invariant)
+# the real-linear case (the process Re Tr(G^* T) is only real-linear): theta = pi suffices
+L_real = lambda Z: np.real(np.sum(np.conj(Lmat) * Z))
+check("(4) a nonzero real-linear functional is not junk-blind either (theta = pi changes it)",
+      abs(L_real(S)) > 1e-8 and abs(L_real(-S) - L_real(S)) > 1e-8)
 
 print("-" * 74)
 if fails:
