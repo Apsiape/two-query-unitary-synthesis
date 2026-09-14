@@ -5,7 +5,9 @@ was initially prepared privately at
 `https://github.com/Apsiape/two-query-unitary-synthesis`. The author has now
 authorized committing, pushing, and making it public. A versioned GitHub
 release/tag and Zenodo archival step are now authorized: the author confirmed
-the integration is enabled. DOI verification remains pending.
+the integration is enabled. The release and Zenodo archive are now public and
+verified; see [ARCHIVAL-RECORD.md](ARCHIVAL-RECORD.md) for the exact commit,
+version DOI, and completed artifact checks.
 
 ## Mathematical gate
 

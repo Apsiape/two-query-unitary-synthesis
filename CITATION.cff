@@ -8,6 +8,7 @@ version: 1.0.4
 date-released: 2026-09-13
 type: software
 repository-code: "https://github.com/Apsiape/two-query-unitary-synthesis"
+doi: "10.5281/zenodo.22740995"
 license:
   - "CC-BY-4.0"
   - "MIT"
@@ -19,7 +20,8 @@ preferred-citation:
       given-names: "Seth"
   year: 2026
   version: 1.0.4
-  url: "https://github.com/Apsiape/two-query-unitary-synthesis"
+  doi: "10.5281/zenodo.22740995"
+  url: "https://doi.org/10.5281/zenodo.22740995"
   notes: "Preprint. Manuscript and prose: CC BY 4.0; verification code: MIT."
 keywords:
   - quantum query complexity

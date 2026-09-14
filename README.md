@@ -2,6 +2,8 @@
 
 **Seth Douglas** · version 1.0.4 · 2026-09-13
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22740995.svg)](https://doi.org/10.5281/zenodo.22740995)
+
 A focused research repository: one self-contained paper, two companion notes, nine
 finite-check scripts, and seven scoped Lean declarations. The complete analytic proof
 is not formalized. See [VALIDATION.md](VALIDATION.md) for the current readiness assessment.
@@ -12,8 +14,10 @@ Read the [manuscript PDF](paper/paper.pdf), the
 
 The [final adversarial AI audit](audit/2026-09-13-final-adversarial-audit.md)
 found no remaining mathematical or artifact-integrity blocker within its inspected
-scope. Public GitHub publication is authorized; the versioned GitHub release and
-Zenodo DOI are pending. No DOI or journal acceptance is claimed.
+scope. The [v1.0.4 release](https://github.com/Apsiape/two-query-unitary-synthesis/releases/tag/v1.0.4)
+is public and [archived on Zenodo](https://doi.org/10.5281/zenodo.22740995).
+See the [archival verification record](publication/ARCHIVAL-RECORD.md).
+Archival publication does not constitute journal acceptance or peer review.
 
 ## The result in three lines
 

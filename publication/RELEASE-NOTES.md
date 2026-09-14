@@ -2,7 +2,9 @@
 
 Public GitHub publication and versioned archival release were authorized on
 2026-09-13; the author confirmed that the Zenodo integration is enabled.
-The Zenodo DOI will be reported only after the public record is verified.
+The public Zenodo record and archived files have been verified:
+https://doi.org/10.5281/zenodo.22740995 (version 1.0.4).
+The all-versions DOI is https://doi.org/10.5281/zenodo.22740994.
 
 The Clean Two-Query Threshold for Unitary Synthesis, Seth Douglas.
 
