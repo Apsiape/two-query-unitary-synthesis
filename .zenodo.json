@@ -1,0 +1,13 @@
+{
+  "title": "The Clean Two-Query Threshold for Unitary Synthesis",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "creators": [{"name": "Douglas, Seth"}],
+  "publication_date": "2026-09-13",
+  "version": "1.0.4",
+  "access_right": "open",
+  "license": "cc-by-4.0",
+  "description": "<p>This archive contains the preprint The Clean Two-Query Threshold for Unitary Synthesis, its self-contained sources, companion notes, verification code, and scoped Lean checks.</p><p>For fixed two-query architectures with arbitrary contractions and independent unimodular selectors, the Gaussian mean width is at most 2 min(N,Q) sqrt(log(2Q)). Universal clean synthesis consequently requires Omega(2^n) oracle input bits independently of workspace. A two-query permutation-transport construction matches the fixed-error exponential resource threshold.</p><p>This does not resolve unrestricted two-query synthesis with garbage or the full Aaronson-Kuperberg problem. The complete analytic proof is not formalized. The recorded AI audits are not external peer review.</p><p>Licensing is file-specific: the manuscript and prose are CC BY 4.0 (LICENSE); verification and other software are MIT (LICENSE-CODE). The record-level CC BY 4.0 label describes the preprint, not a relicensing of the accompanying software.</p>",
+  "keywords": ["quantum query complexity", "unitary synthesis", "Aaronson-Kuperberg problem", "Gaussian mean width", "matrix concentration"],
+  "notes": "Version 1.0.4. The repository archive includes paper/paper.pdf and its LaTeX source. Manuscript and prose: CC BY 4.0. Software: MIT. See LICENSE and LICENSE-CODE for the applicable file classes. No affiliation, ORCID, journal acceptance, or complete formal verification is claimed."
+}

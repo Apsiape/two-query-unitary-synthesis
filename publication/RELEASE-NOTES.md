@@ -1,8 +1,8 @@
 # Version 1.0.4 — public source publication
 
-Public GitHub source publication was authorized on 2026-09-13. A versioned
-GitHub release/tag and Zenodo DOI remain pending until the author enables the
-Zenodo integration and authorizes that archival step.
+Public GitHub publication and versioned archival release were authorized on
+2026-09-13; the author confirmed that the Zenodo integration is enabled.
+The Zenodo DOI will be reported only after the public record is verified.
 
 The Clean Two-Query Threshold for Unitary Synthesis, Seth Douglas.
 
@@ -37,6 +37,11 @@ Changes since 1.0.3:
   separate manuscript (CC BY 4.0) and source-code (MIT) licenses.
 
 See `VALIDATION.md` for the checks actually completed and their limits.
+
+Licensing is file-specific: manuscript and prose are CC BY 4.0; software is MIT.
+The root `.zenodo.json` supplies preprint metadata and explicitly records this
+distinction; it overrides Zenodo's limited CITATION.cff importer. The manuscript
+PDF and TeX retain the hashes recorded in `VALIDATION.md`.
 
 The final adversarial AI audit found no remaining mathematical or artifact-integrity
 release blocker within its inspected scope; its record is

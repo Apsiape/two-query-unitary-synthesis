@@ -15,7 +15,7 @@ root = Path(__file__).resolve().parents[1]
 out = root / "release"
 out.mkdir(exist_ok=True)
 version = re.search(r"^version: ([0-9.]+)$", (root / "CITATION.cff").read_text(), re.M).group(1)
-top_files = {".gitattributes", ".gitignore", "README.md", "CHANGELOG.md", "CITATION.cff",
+top_files = {".gitattributes", ".gitignore", ".zenodo.json", "README.md", "CHANGELOG.md", "CITATION.cff",
              "LICENSE", "LICENSE-CODE", "STATUS.md", "VALIDATION.md", "requirements.txt"}
 source_roots = {"paper", "notes", "verify", "lean", "tools", "audit", "publication"}
 listed = subprocess.check_output(
