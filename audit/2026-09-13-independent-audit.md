@@ -6,7 +6,7 @@ This was a separate AI agent's fresh mathematical review within the same release
 workflow, not external human peer review. Existing audit labels and prior review
 verdicts were not premises. No manuscript or implementation file was edited by this
 auditor; corrections described below were made by the main release agent and inspected
-here. There was no `AGENTS.md` in the audited repository or its `C:/Infanox` parent.
+here. There was no `AGENTS.md` in the audited repository or its parent directory.
 
 ## Verdict
 
@@ -299,13 +299,14 @@ Reading the Lean declarations confirms that `width_of_khintchine` and
 concentration hypotheses. They do not formalize those analytic inputs, the Schur
 variance computation, address compression, packing, or transport. The seven scoped
 declarations are consistent with the disclosure in `lean/README.md`.
-I did not rerun Lean's kernel in this audit lane; recorded axiom output is a
+I did not rerun Lean's kernel in this audit; recorded axiom output is a
 historical artifact, not a fresh check by this auditor. The main release build
 and kernel-check status must remain separately reported.
 
-## Bounded diagnostics actually run in this audit lane
+## Bounded diagnostics actually run in this audit
 
-All processes used `C:/Infanox/ak-working/tools/run_ak_capped.py`, 512 MiB and a
+All processes used `../ak-working/tools/run_ak_capped.py` (relative to the audited
+repository; an external local safety wrapper, not a package dependency), 512 MiB and a
 60-second timeout, one diagnostic at a time. Every process exited successfully;
 none remained running.
 
@@ -322,7 +323,7 @@ none remained running.
    pointwise absorption passed; maximum coefficient-identity residual was
    `6.66e-16`. This is a finite algebra check, not an asymptotic certificate.
 
-No full numerical suite was rerun by this lane. In particular, successful samples
+No full numerical suite was rerun by this auditor. In particular, successful samples
 or alternating maximization cannot certify a continuous supremum or the transport
 asymptotics; the analytic arguments above carry those conclusions.
 

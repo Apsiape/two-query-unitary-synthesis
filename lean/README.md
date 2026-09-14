@@ -1,4 +1,4 @@
-# Lean spine
+# Scoped Lean formalization
 
 A kernel-checked formalization of the deterministic part of the two-query width bound,
 in its audited form (paper Corollary 4.2, real sign selectors, symmetric weighting,

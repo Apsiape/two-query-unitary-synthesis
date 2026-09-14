@@ -9,6 +9,10 @@ for exact derangements. Both are repaired; the displayed finite table is unchang
 The audit also sharpened the rate-function and numerical-verification wording.
 See `publication/RELEASE-CHECKLIST.md` for the current build and publication state.
 
+The later release-correction pass is recorded separately below. Historical audit
+and test results are not a certification of every later snapshot. Version 1.0.4
+remains an unpublished release candidate; this pass did not commit, push or publish.
+
 The following records the prior version 1.0.3 local proof/dependency review,
 not a fresh certification of every historical claim. The reviewer read the main manuscript and
 both notes, re-derived the load-bearing arguments, inspected the formalization,
@@ -42,7 +46,7 @@ implementation of a continuum of unitaries.
 1. Junk-invariant linear functionals vanish, but that alone does not imply a
    minimal oracle degree or optimal transfer depth. The stronger claim was
    withdrawn everywhere it was used as an active conclusion. A cancellation
-   control illustrates why packet degree cannot be inferred that way.
+   control illustrates why amplitude-polynomial degree cannot be inferred that way.
 2. The claimed universal Sudakov constant 2.09 was not justified by its finite
    quadratures. Removed the numerical upper claim and its misleading assertions.
    The standard theorem with an unspecified absolute constant is sufficient.
@@ -110,7 +114,7 @@ Nothing in this pass commits, pushes, mints a DOI, or submits to arXiv.
 Before publication, the author should read the final PDF and confirm the title,
 attribution and disclosures. This document does not promise mathematical infallibility.
 
-## Executed local checks
+## Historical local checks (before the release-correction pass)
 
 - `python verify/run_all.py`: **9/9 passed**, including the new rational-arithmetic
   controls. Numerical checks remain finite-instance evidence.
@@ -126,9 +130,71 @@ attribution and disclosures. This document does not promise mathematical infalli
   the title page and dense proof appendices. No clipping or layout defect remained.
 - `git diff --check`: passed. Generated release and rendering directories are ignored.
 
-Final reviewed source SHA-256:
+Initial source SHA-256 from the earlier independent audit (historical, not current):
 `E39591FDCFB5F31A95A65DD9D06C914797F4E144F1D8649E64F509F3C293C9BB`.
 
-Final locally built PDF SHA-256:
+Previously recorded local PDF SHA-256 (historical, not current):
 `BBDEF52AA80FA533BEF33D4A3507F1C02DC430D6A18839FF9BD711E940B20016`.
 Rebuilding may change PDF metadata and its hash without changing the source.
+
+## Current correction snapshot — 2026-09-13
+
+An independently instantiated correction worker inspected the affected proofs and
+implemented the following changes. This is a scoped correction check, not a fresh
+full-paper audit or external peer review.
+
+- The Setting section now maps a physical Boolean circuit, including its answer
+  and spectator registers, to the fixed contractions of Definition 2.1. Projection
+  of a full-output approximate-clean guarantee gives the claimed operator-norm
+  block error. Reduced-channel closeness alone is explicitly not that guarantee.
+- The conjectural AK conclusion is qualified by the clean model; the separate
+  address-uniform doubled-insertion hypothesis needed for garbage is retained.
+- Transport now distinguishes the squared real-linear norm `1/(2s^2)` from the
+  complex covariance map's `LL*=I/s^2`. The valid covariance bound is unchanged.
+- The duplicated Markdown clause, unexplained manuscript shorthand and two local
+  path references in the historical audit were made reader-facing. Historical
+  reviewed hashes in that audit were preserved. Permutation-family packing and
+  universal-unitary packing are explicitly distinguished.
+
+Executed for this corrected snapshot:
+
+- `python tools/check_release.py`: passed source/version/label/scope consistency
+  and Markdown mathematics checks.
+- `python tools/check_release_corrections.py`: **62 finite controls passed**,
+  maximum residual `7.11e-15`, testing ordinary Boolean-query diagonalization with
+  spectators, fixed input/output embeddings, the projected error inequality and
+  real/complex covariance typing. These finite checks supplement the algebra.
+- `python tools/build_paper.py`: passed isolated three-pass compilation; no
+  undefined references or overfull boxes. The corrected PDF has **18 pages**.
+- All 18 pages were rendered and visually checked, with enlarged inspection of
+  the new circuit bridge, scope/disclosure and covariance pages (3, 13 and 15).
+- `git diff --check`: passed. All capped diagnostic/build/render processes exited.
+
+The nine-script mathematical suite and Lean kernel build were **not rerun** for
+these exposition/typing corrections; their historical results remain above.
+No claim of changed asymptotic bounds or a stronger covariance constant is made.
+
+Current corrected `paper/paper.tex` SHA-256:
+`B9BF7D21198A032E270A1322F4A590268C523975D03CC7CEFFFFE44F7A819BB8`.
+
+Current rebuilt `paper/paper.pdf` SHA-256:
+`1529C00E91C5153B8F03FBAEF6283F2C149CE9294574170FAA5F45BED79E508D`.
+
+These identify this source and rendered PDF, not an independently peer-reviewed
+release. A subsequent rebuild can change the PDF hash through metadata; regenerate
+the current snapshot record and release checksums after any such rebuild.
+
+## Final adversarial check and public-source authorization
+
+The [final independent AI audit](audit/2026-09-13-final-adversarial-audit.md)
+checked the corrected mathematical chain and the exact manuscript hashes above,
+and found no remaining mathematical or artifact-integrity release blocker within
+its scope. It independently checked 44 then-current manifest entries and the
+source archive. The report states its limits; this is not external peer review.
+
+The author subsequently authorized committing, pushing, and making GitHub public.
+The public-source preflight checks tracked files and reachable Git history for
+unintended build artifacts and credential signatures. Local generated release
+bundles, render images, build logs and caches remain ignored. Scientific audits,
+honest AI disclosure and correction history are intentional public content.
+No tag, GitHub release or Zenodo DOI is created in the visibility-only step.

@@ -185,6 +185,34 @@ $Q=2^{n+a}$, and we write $w=\log_2Q$ for the total qubit count. The bounds belo
 in $\log(2Q)$, i.e.\ in $w$; Theorem~\ref{thm:address} then separates the oracle input length
 from the workspace.
 
+\paragraph{From oracle circuits to Definition~\ref{def:arch}.}
+Let $\iota_{\rm in},\iota_{\rm out}:\C^N\to\C^Q$ append the fixed initial
+and required final auxiliary states. A two-query circuit has full unitary
+$V_f=A_2O_fA_1O_fA_0$, with target-independent unitary gates $A_j$.
+For the usual Boolean query $O_f|a,b,r\rangle=|a,b\oplus f(a),r\rangle$,
+conjugating its answer qubit by a Hadamard gives
+$D_f|a,b,r\rangle=(-1)^{bf(a)}|a,b,r\rangle$; the spectator register $r$
+is unchanged. Absorb these fixed Hadamards into the adjacent $A_j$, so that
+$V_f=A_2D_fA_1D_fA_0$. Its clean-output block is
+\[
+ T_f=\iota_{\rm out}^*V_f\iota_{\rm in}
+     =B D_f W D_f C,\qquad
+ B=\iota_{\rm out}^*A_2,\quad W=A_1,\quad C=A_0\iota_{\rm in}.
+\]
+These are fixed contractions of the stated dimensions. The physical diagonal
+entries have repetitions and a fixed $+1$ sector; allowing arbitrary independent
+$x,y\in\T^Q$ only enlarges the family. If the successful oracle satisfies the
+full-output approximate-clean guarantee
+$\|V_f\iota_{\rm in}-\iota_{\rm out}U\|_{\op}\le\gamma$, then
+\[
+ \|T_f-U\|_{\op}
+ =\|\iota_{\rm out}^*(V_f\iota_{\rm in}-\iota_{\rm out}U)\|_{\op}
+ \le\gamma.
+\]
+This is uniform over reference-entangled inputs. It assumes approximate cleanup
+of the full output, not merely closeness of the reduced channel after discarding
+auxiliaries; the latter is treated separately in Section~\ref{sec:garbage}.
+
 \paragraph{Notation.} $b_p=Be_p\in\C^N$ is the $p$-th column of $B$ and $c_q=e_q^{\top}C\in\C^N$
 the $q$-th row of $C$, with \textbf{leverages} $\lambda_p=\|b_p\|^2$, $\mu_q=\|c_q\|^2$,
 $\Lambda=\diag(\lambda)$, $M_\mu=\diag(\mu)$, and $P_\lambda,P_\mu$ the projections onto their
@@ -383,8 +411,8 @@ $D=\diag(d)$ one writes $\operatorname{Re}(g^{\top}Mg)=v^{*}Kv$ with $v=D^{1/2}g
 $\|v\|^2=\Tr D\le2\min(N,Q)$, and bounds $\E\|K\|\le4\sqrt{\log2Q}$. The asymmetric route
 above was also verified in that audit, as the product-form strengthening with
 $\Fro{B}\Fro{C}$ in place of $\Tr D$; both routes are valid and incomparable instance by
-instance. The deterministic spine of the symmetric route
-is formalized in the \texttt{lean/} directory of the repository.
+instance. The deterministic inequalities of the symmetric proof
+are formalized in the \texttt{lean/} directory of the repository.
 
 \begin{remark}[the weighting is sufficient, not unique]\label{rem:weighting}
 Under $d\mapsto td$ the variance operators scale by $t^{-2}$, so any $d'\succeq\lambda+\mu$
@@ -531,6 +559,11 @@ $w_2\ge c\rho\sqrt d\sqrt{d\log d}=\Theta(N\sqrt{\log2Q})$ at $Q=2N^2$. So at th
 Theorem~\ref{thm:width} is attained up to a constant, and neither the factor $N$ nor the
 factor $\sqrt{\log2Q}$ can be improved by more than a constant there.
 \end{corollary}
+
+There is no conflict with the universal lower bound: the permutation family has
+packing logarithm $\Theta(N\log N)$ at fixed separation, whereas covering all
+of $U(N)$ requires $\Theta(N^2)$. It establishes tightness of the capacity bound,
+not universality at $Q=\Theta(N^2)$.
 
 Padding an architecture with unused workspace raises $\log Q$ without changing $w_2$, so
 this is a statement about the scale $Q=\Theta(N^2)$, not about every polynomial. At
@@ -713,11 +746,11 @@ Take $W=e^{i\theta}I$: junk-blindness gives $L(S)=L(e^{i\theta}S)=e^{i\theta}L(S
 $\theta$; for a real-linear $L$ take $\theta=\pi$.
 \end{proof}
 
-The lemma rules out a nonzero junk-blind linear functional of the packet itself.
+The lemma rules out a nonzero junk-blind linear functional of the amplitude operator itself.
 Conjugation provides a useful quadratic invariant with an explicit $2t$-insertion
 representation. This proves sufficiency of the transfer below, not necessity of
 oracle degree $2t$: substitution of an oracle circuit into an invariant can cause
-degree cancellations. For example, $D_gD_g=I$ is a two-query packet with constant
+degree cancellations. For example, $D_gD_g=I$ is a two-query product with constant
 conjugated observables. No lower bound on the degree of every possible invariant,
 or on every width method, is asserted.
 
@@ -782,7 +815,7 @@ rules out vanishing advantage.
 \begin{remark}[what is not claimed]\label{rem:notclaimed}
 At $t=2$ the hypothesis of Theorem~\ref{thm:transfer} is a clean \textbf{four}-insertion
 width bound, which is open. By the palindromic form it suffices to bound the sandwich
-subclass $Y_g^{*}XY_g$ with $Y_g$ a two-insertion packet whose left endpoint is the identity
+subclass $Y_g^{*}XY_g$ with $Y_g$ a two-insertion product whose left endpoint is the identity
 of the full register: exactly the case in which the endpoint budget that makes step~3 of
 Theorem~\ref{thm:width} work is unavailable, since that identity has squared Frobenius norm
 equal to the register dimension. So the unrestricted garbage-model two-query problem is
@@ -805,7 +838,7 @@ that the width of the $k$-query clean class is $O(N\cdot k\cdot\polylog Q)$, is 
 exponent by \cite{Ros26}: every unitary is implementable at $k=\tilde O(\sqrt N)$ with
 $\log Q=\poly(n)$, so the width must reach the $\Theta(N^{3/2})$ width of the unitary group
 there, which forces at least linear growth in $k$. A proof of the conjecture would resolve
-the Aaronson--Kuperberg question negatively. Less would do: any bound of the form
+the Aaronson--Kuperberg question negatively in the clean model. Less would do: any bound of the form
 $N\cdot\poly(k,\log Q)$ already excludes universal clean synthesis at polynomial depth and
 polynomial qubit count, since such a class could not $\varepsilon$-cover $U(N)$, whose width
 is $\Theta(N^{3/2})$ (the argument of Corollary~\ref{cor:tight}); and by
@@ -820,7 +853,7 @@ input bits. Banerjee \cite{Ban25} sharpens the matrix count to $2^N$ under the
 exact every-oracle-clean assumption.
 \item \textbf{Completely bounded forms.} \cite[Thm~1.3]{ABP18} characterizes scalar expected
 outputs of $t$-query algorithms by completely bounded forms of degree $2t$.
-Our matrix-valued amplitude packet is separately multilinear of degree $t$.
+Our matrix-valued amplitude operator is separately multilinear of degree $t$.
 These are related factorizations, but the cited scalar theorem is not an equivalence
 with the full matrix-valued unit ball. Such an identification is not used or claimed here.
 \end{enumerate}
@@ -842,7 +875,7 @@ operators against Monte Carlo and their domination), Proposition~\ref{prop:unita
 Propositions~\ref{prop:invisible} and \ref{prop:pair}, Proposition~\ref{prop:constant},
 Proposition~\ref{prop:dlm}, the factorization of Theorem~\ref{thm:address}, the ingredients of
 Theorem~\ref{thm:transport} at small $N$, and the identities of Section~\ref{sec:garbage}.
-The \texttt{lean/} directory holds a kernel-checked formalization of the deterministic spine
+The \texttt{lean/} directory holds a kernel-checked formalization of the deterministic inequalities
 of Corollary~\ref{cor:real}, with the analytic inputs as explicit hypotheses; its
 \texttt{README} states exactly what is and is not certified.
 
@@ -951,9 +984,12 @@ holds for $r(O_UX)$. Therefore
 \]
 Here we used $q_\beta-O_Uq_\alpha=O_Ur(X)-r(O_UX)$ and
 $(a-b)(a-b)^\top\preceq2aa^\top+2bb^\top$; no independence
-between these two residual vectors is needed. The map
-$(x,y)\mapsto(x+iy)/(s\sqrt2)$ has squared operator norm $1/s^2$,
-so
+between these two residual vectors is needed. For real $x,y$, the map
+$(x,y)\mapsto(x+iy)/(s\sqrt2)$ has squared real-linear operator norm $1/(2s^2)$.
+To transport the covariance as a complex Hermitian matrix, however, use its
+complex-linear extension $L=[I_N\;\;iI_N]/(s\sqrt2)$, for which
+$LL^*=I_N/s^2$. Thus, writing $\Sigma\preceq4e^2I_{2N}$ for the real
+covariance above, $L\Sigma L^*\preceq4e^2LL^*$ gives
 \[
  C_U:=\E[(w_\beta-Uw_\alpha)(w_\beta-Uw_\alpha)^*]
  \preceq(4e^2/s^2)I_N.

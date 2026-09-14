@@ -1,6 +1,8 @@
-# Version 1.0.4 — release candidate
+# Version 1.0.4 — public source publication
 
-Private repository preparation only; public release and Zenodo publication are on hold.
+Public GitHub source publication was authorized on 2026-09-13. A versioned
+GitHub release/tag and Zenodo DOI remain pending until the author enables the
+Zenodo integration and authorizes that archival step.
 
 The Clean Two-Query Threshold for Unitary Synthesis, Seth Douglas.
 
@@ -15,7 +17,13 @@ is documented in `audit/2026-09-13-independent-audit.md`; this is not external p
 
 Changes since 1.0.3:
 
-- Expanded AI-use disclosure in line with the I3322 paper, preserving Q2-specific
+- Completed the explicit circuit-to-matrix reduction and clean-output error
+  implication; clarified the clean-only scope of the conjectural conclusion.
+- Distinguished the real-linear norm from the complex covariance-map norm in
+  transport, without changing the valid covariance bound.
+- Removed duplicated prose and internal shorthand, explained why easy permutation
+  families do not imply universality, and refreshed current snapshot provenance.
+- Expanded AI-use disclosure, preserving Q2-specific
   verification limits and explicit author responsibility.
 
 - Made the fixed-architecture quantifier explicit in the conjugation-transfer
@@ -29,3 +37,7 @@ Changes since 1.0.3:
   separate manuscript (CC BY 4.0) and source-code (MIT) licenses.
 
 See `VALIDATION.md` for the checks actually completed and their limits.
+
+The final adversarial AI audit found no remaining mathematical or artifact-integrity
+release blocker within its inspected scope; its record is
+`audit/2026-09-13-final-adversarial-audit.md`. It is not external peer review.

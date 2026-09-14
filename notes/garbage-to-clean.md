@@ -107,11 +107,11 @@ linear, then $`L\equiv0`$.*
 *Proof.* Take $`W=e^{i\theta}I`$: junk-blindness gives $`L(S)=L(e^{i\theta}S)=e^{i\theta}L(S)`$
 for every $`\theta`$. For a real-linear $`L`$ take $`\theta=\pi`$. $`\square`$
 
-The lemma rules out a nonzero junk-blind linear functional of the packet itself.
+The lemma rules out a nonzero junk-blind linear functional of the amplitude operator itself.
 Conjugation provides a useful quadratic invariant with an explicit $`2t`$-insertion
 representation. This proves sufficiency of the transfer below, not necessity of
 oracle degree $`2t`$: substitution of an oracle circuit into an invariant can cause
-degree cancellations. For example, $`D_gD_g=I`$ is a two-query packet with constant
+degree cancellations. For example, $`D_gD_g=I`$ is a two-query product with constant
 conjugated observables. No lower bound on the degree of every possible invariant,
 or on every width method, is asserted.
 
@@ -126,7 +126,7 @@ constant diamond error. At $`t=2`$ the target is clean-4.*
 
 *Proof.* Four steps.
 
-**(a) The circuit is already a packet.** Restricting $`V(g)`$ to the clean input gives,
+**(a) The circuit already has the required product form.** Restricting $`V(g)`$ to the clean input gives,
 verbatim, $`S_g=A_t(D_g\otimes I)A_{t-1}\cdots(D_g\otimes I)A_0\iota\in\mathcal P_t`$ with
 rectangular endpoint slots.
 
@@ -191,7 +191,7 @@ The obstruction is concrete. In the degree-2 proof the sign supremum is absorbed
 the leverage-weighted selector vectors have selector-independent norms: every slot touches
 an endpoint, so the whole coefficient mass is priced on the endpoint budget
 $`\|B\|_F^2+\|C\|_F^2`$. By the palindromic form it suffices to bound the sandwich subclass
-$`Y_g^{*}XY_g`$ with $`Y_g`$ a two-insertion packet whose left endpoint is the identity of
+$`Y_g^{*}XY_g`$ with $`Y_g`$ a two-insertion product whose left endpoint is the identity of
 the full register, and there the endpoint budget is the register dimension itself: the two
 inner sign layers are not priced by anything of order $`N`$. What is needed is a domination
 certificate that reprices the inner layers on the target budget alone. This is open, and
@@ -214,7 +214,7 @@ accounting. No unproved comparison with such a compiler is needed here.
 ## 6. The restricted route, and why it is not included
 
 Breaking junk-blindness by a fixed unit reference $`|r\rangle`$ gives the exact degree-$`t`$
-packet $`(I_N\otimes\langle r|)S_g=\langle r|j_g\rangle U_g`$, with the junk entering only as the
+operator $`(I_N\otimes\langle r|)S_g=\langle r|j_g\rangle U_g`$, with the junk entering only as the
 scalar $`\alpha_g=\langle r|j_g\rangle`$. A pigeonhole over a net of the junk sphere then
 yields a two-query garbage-model bound valid when $`\min(Q,4D)=o(N^2)`$, i.e. when the
 junk register has fewer than about $`2n`$ qubits. That statement rests on the paper's

@@ -10,6 +10,11 @@ Read the [manuscript PDF](paper/paper.pdf), the
 [independent AI audit](audit/2026-09-13-independent-audit.md), and the
 [release checklist](publication/RELEASE-CHECKLIST.md). This audit is not external peer review.
 
+The [final adversarial AI audit](audit/2026-09-13-final-adversarial-audit.md)
+found no remaining mathematical or artifact-integrity blocker within its inspected
+scope. Public GitHub publication is authorized; the versioned GitHub release and
+Zenodo DOI are pending. No DOI or journal acceptance is claimed.
+
 ## The result in three lines
 
 Write $`N=2^n`$. For clean two-query unitary synthesis of every $`n`$-qubit unitary:
@@ -38,7 +43,7 @@ notes/garbage-to-clean.md       the garbage-model transfer, in full
 verify/run_all.py               runs all nine finite-check scripts; exit 0 iff all pass
 verify/verify_*.py              one deterministic numpy script per group of claims
 verify/md_math_lint.py          lints the markdown mathematics
-lean/                           Lean 4 + Mathlib: kernel-checked deterministic spine
+lean/                           Lean 4 + Mathlib: kernel-checked deterministic inequalities
 STATUS.md                       claim-by-claim ledger: audited / proved here / not claimed
 CHANGELOG.md                    version history
 VALIDATION.md                   current proof/dependency review and release scope

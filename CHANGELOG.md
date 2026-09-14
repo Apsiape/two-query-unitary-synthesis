@@ -2,6 +2,16 @@
 
 ## 1.0.4 — 2026-09-13 release candidate
 
+- Release-correction pass: explicitly reduced Boolean circuits to the abstract
+  two-selector family and derived the projected error from full-output cleanup.
+  Qualified the all-depth conclusion by its clean-model scope; the stronger
+  address-uniform doubled-insertion hypothesis for garbage is unchanged.
+- Clarified real versus complex operator norms in the transport covariance proof,
+  preserving its valid constant. Explained permutation-family tightness versus
+  universal capacity and removed duplicated prose and internal shorthand.
+- Relabeled stale validation hashes as historical and recorded the corrected
+  source/PDF snapshot separately. The release candidate remains unpublished.
+
 - Expanded the AI-use disclosure to match the I3322 disclosure's transparency and
   author-responsibility standard, with Q2-specific verification limits. This is an
   editorial update; the analytic theorem statements are unchanged.

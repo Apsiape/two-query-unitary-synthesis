@@ -174,7 +174,11 @@ $`(a-b)(a-b)^{\top}\preceq2aa^{\top}+2bb^{\top}`$,
 \mathbb E\bigl[(q_{\theta(O_UX)}-O_Uq_{\theta(X)})(q_{\theta(O_UX)}-O_Uq_{\theta(X)})^{\top}\bigr]\preceq4e^2I_{2N}.
 ```
 
-Converting to the normalized complex coordinates $`w`$ gives
+For real $`x,y`$, the map $`(x,y)\mapsto(x+iy)/(s\sqrt2)`$ has squared
+real-linear norm $`1/(2s^2)`$. The covariance calculation instead uses the
+complex-linear extension $`L=[I_N\;\;iI_N]/(s\sqrt2)`$, which satisfies
+$`LL^*=I_N/s^2`$. Applying $`\Sigma\mapsto L\Sigma L^*`$ to the real covariance
+bound therefore gives
 $`\mathbb E\,(w_\beta-Uw_\alpha)(w_\beta-Uw_\alpha)^{*}\preceq(4e^2/s^2)I_N`$. At output coordinate
 $`b=\pi(a)`$ the entry of $`\Delta_\pi\psi`$ is $`(w_a^{*}\psi-w_b^{*}U\psi)/\sqrt M`$;
 averaging its squared magnitude gives the quadratic form of
