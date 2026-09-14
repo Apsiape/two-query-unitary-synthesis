@@ -12,3 +12,5 @@ Prints the axiom dependencies of every certified theorem.  Each line must show e
 #print axioms TwoQuery.Q2.two_re_quadratic
 #print axioms TwoQuery.Q2.cube_norm_const
 #print axioms TwoQuery.Q2.width_of_khintchine
+#print axioms TwoQuery.Q2.torus_norm_const
+#print axioms TwoQuery.Q2.asymmetric_width_assembly

@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.0.4 — 2026-09-13 release candidate
+
+- Expanded the AI-use disclosure to match the I3322 disclosure's transparency and
+  author-responsibility standard, with Q2-specific verification limits. This is an
+  editorial update; the analytic theorem statements are unchanged.
+
+- Fresh-context independent AI audit found no headline proof blocker; this is not
+  external peer review. The complete report records scope and residual limitations.
+- Repaired the fixed-architecture quantifier in Theorem 7.2 and made its rate's
+  target-dimension dependence explicit. No union over architectures is bounded.
+- Corrected finite derangement counting and added exact small-case controls;
+  displayed table values are unchanged. Floating-point values are not interval certificates.
+- Clarified clean compression versus reduced channel, and local-optimizer checks
+  versus certification of a torus supremum.
+- Prepared publication metadata, manuscript-preferred citation and explicit
+  manuscript/code licensing; no DOI or publication is implied by local readiness.
+
+## 1.0.3 — local proof and submission-readiness pass
+
+- Preserved the clean two-query width, address, and matching fixed-error threshold.
+- Added the full permutation-transport proof and an exact finite control to the PDF
+  appendices; the submission no longer needs a Markdown companion to supply a proof.
+- Withdrew the unsupported necessity/minimal-degree interpretation of junk blindness.
+  The sufficient conjugation transfer remains; channel duality simplifies its error bound.
+- Removed the unproved universal numerical Sudakov constant; finite quadrature was
+  not a proof over all packing sizes. The asymptotic conclusions are unchanged.
+- Corrected Boolean-table-entry versus address-bit terminology and the scalar
+  completely-bounded-forms attribution; added Banerjee and Huang as related work.
+- Added exact rational controls, expanded Lean to seven scoped declarations, and
+  replaced the all-Mathlib import by targeted imports for bounded reproducibility.
+- Added isolated PDF/source-bundle build and source consistency checks.
+- Narrowed machine-verification language. No full formalization or external blind
+  certification is claimed; see VALIDATION.md.
+
 ## 1.0.2 — 2026-09-11
 
 Referee pass on the compiled LaTeX paper (no mathematical defects found). Notation made

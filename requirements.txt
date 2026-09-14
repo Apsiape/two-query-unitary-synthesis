@@ -1,0 +1,2 @@
+# Finite verification suite; version exercised for the 1.0.4 release candidate.
+numpy==2.4.3

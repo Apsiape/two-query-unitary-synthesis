@@ -1,0 +1,8 @@
+*.md text eol=lf
+*.tex text eol=lf
+*.py text eol=lf
+*.lean text eol=lf
+*.toml text eol=lf
+*.json text eol=lf
+*.cff text eol=lf
+*.pdf binary

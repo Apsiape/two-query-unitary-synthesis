@@ -2,11 +2,12 @@
 
 **Seth Douglas**
 
-*Version 1.0.2 — 2026-09-11*
+*Version 1.0.4 — 2026-09-13*
 
-> Every numbered claim below that admits a finite check is exercised by a script in `verify/`,
+> Selected identities and finite instances are exercised by scripts in `verify/`,
 > and `STATUS.md` records, claim by claim, which checks exist, what has been independently
-> audited and what has not. The repository is <https://github.com/Apsiape/two-query-unitary-synthesis>.
+> audited and what has not. These checks do not certify the complete analytic proof.
+> The repository is <https://github.com/Apsiape/two-query-unitary-synthesis>.
 > Display and inline mathematics follow GitHub's renderer conventions.
 
 ---
@@ -15,8 +16,8 @@
 
 Aaronson and Kuperberg asked whether every $`n`$-qubit unitary can be implemented by a
 polynomial-size quantum circuit making few queries to a classical oracle. At one query the
-answer is known to be no. Between one query and the $`O(2^{n/2})`$ queries that suffice, no
-capacity bound was known against adaptive queries.
+answer is known to be no. We study two sequential queries, allowing arbitrary
+workspace but requiring its approximate return to a fixed state.
 
 We settle the two-query case in the clean model, where the workspace must be returned to
 its initial state, by pinning both of its resource thresholds up to a logarithm in the
@@ -36,11 +37,11 @@ error. Write $`N = 2^n`$.
   $`O(2^n\log(1/\varepsilon))`$ address bits, at error $`\varepsilon`$.
 
 So the clean two-query qubit threshold and address-length threshold are both
-$`\Theta(2^n)`$ up to the factor $`\log(1/\varepsilon)`$. We also show that the bound is
-tight at workspace $`\Theta(N^2)`$, explain why the one-query argument does not extend, and
+$`\Theta(2^n)`$ up to the factor $`\log(1/\varepsilon)`$. We also show that the width bound is
+tight at register dimension $`Q=\Theta(N^2)`$, explain why the one-query argument does not extend, and
 prove a transfer theorem reducing the garbage-model two-query problem to a clean
-four-insertion width bound, which remains open; no width argument that is linear in the
-realized operator and blind to the junk can do with fewer insertions.
+four-insertion width bound, which remains open. This is a sufficient route, not a
+proof that every garbage-model method must use four insertions.
 
 ---
 
@@ -53,7 +54,7 @@ $`n`$-qubit unitary can be implemented by a polynomial-time quantum algorithm wi
 queries to a classical oracle. The known landmarks are:
 
 - **[AK07, Thm 6.7]** one query, exact model: at most $`4^N`$ distinct unitaries, at most
-  $`2N`$ oracle bits used;
+  $`2N`$ relevant Boolean table entries (not address bits);
 - **[LMW24]** one query, or polynomially many parallel (non-adaptive) queries, in the
   approximate/discard model, oracle input length $`o(2^n)`$;
 - **[DLM26]** explicit one-query separations, and Question 1.4 posing the general-depth
@@ -62,19 +63,20 @@ queries to a classical oracle. The known landmarks are:
 - **[Ros26]** an upper bound: $`O(2^{n/2})`$ clean queries suffice, with $`\mathrm{poly}(n)`$
   ancillas.
 
-Against two or more *adaptive* queries no capacity bound was known; on the other side there
-were only the trivial lookup and the permutation synthesizer of [DLM26]. This paper gives,
-to our knowledge, the first capacity bound at two adaptive queries and shows it is
-essentially tight.
+This paper proves a workspace-uniform capacity bound for two sequential queries in the
+clean model and a matching fixed-error resource threshold. Related restricted work
+includes Banerjee's exact every-oracle-clean counting analysis [Ban25] and Huang's
+1.5-query study [Hua25]. Those models and statements should not be identified with
+the present approximation-and-address theorem; none of our proofs uses them.
 
-### 1.2 The model, and why "clean" is the right restriction
+### 1.2 The model and the scope of the clean restriction
 
 A fixed circuit with two oracle calls realizes a target $`U`$ if some oracle makes it
 implement $`U`$ on the target register and, in the **clean** model, return every auxiliary
 register to a fixed state. Nothing is required of the circuit for other oracles; in
 particular, unlike the setting of [AK07, Thm 6.7], whose footnote 13 notes that the theorem
 needs the circuit to implement some unitary for every oracle, we impose no such requirement,
-and our lower bounds hold without it. The only known one-query universal synthesizer, the
+and our lower bounds hold without it. The Bernstein–Vazirani one-query universal synthesizer, the
 Bernstein–Vazirani lookup attributed to Yuen in [LMW24], is not clean: its workspace ends
 holding the description string. So the class we bound is strictly smaller than the discard
 model of [LMW24], and **our conclusions are correspondingly stronger on a correspondingly
@@ -201,16 +203,17 @@ words closed under pointwise product) and identical pre-final data (the frames
 $`C,\,D_gC,\,D_gW_1D_gC`$ on the lawful set and their Gram kernels), whose numbers of distinct
 realizable targets are $`2`$ and $`16`$.*
 
-Verified exhaustively in `verify_decisive_pair.py`: exactness residuals below
-$`10^{-14}`$; the first invariant to differ is the last frame, $`\|K_3^A-K_3^B\|=2.00`$. The
-same script checks Proposition 3.1 on two-query architectures with non-empty lawful sets
-under several final layers.
+An explicit rational construction and exhaustive exact certificate are given in
+Appendix B of the PDF and `verify/verify_exact_controls.py`. The numerical script
+supplies supplementary checks. Since $`N=1`$, the example counts scalar matrices,
+not distinct quantum channels. It is not used in a lower bound.
 
 **Remark 3.3 (what this motivates, and nothing more).** Neither fact is a bound. The first
 says that at depth two capacity is a property of the pre-final map restricted to the lawful
-set, an object whose Boolean structure we have no tool to count; the second says that beyond
-depth two even that reduction fails, so any bound computed from pre-final data alone is at
-best a maximum over completions. Both point away from combinatorial invariants of the lawful
+set, an object whose Boolean structure is not counted by this proof. The second shows
+that frames ending before the last variable mixer need not determine the final matrices;
+it does not contradict injectivity of a fixed final contraction on its lawful ranges.
+Both point away from combinatorial invariants of the lawful
 set and toward a quantity that sees the operators $`T_{x,y}`$ themselves: their metric
 entropy, which Section 4 controls through a Gaussian mean width. A $`2`$-versus-$`16`$ gap
 at $`Q=8`$ establishes nothing asymptotically.
@@ -237,7 +240,9 @@ w_2 \;:=\; \mathbb E_G\,\sup_{x,y\in\mathbb T^Q}\bigl|\mathrm{Tr}(G^{*}T_{x,y})\
 
 *The supremum sits inside the expectation; no exchange of supremum and expectation occurs.*
 
-*Proof.* Six steps; the first three are exact identities.
+*Proof.* If either endpoint is zero, the assertion is immediate. Otherwise both
+leverage supports are nonempty. The following six steps keep the selector
+supremum inside the expectation; the absorption inequality is pointwise.
 
 1. **Exact expansion.** Since $`D_x=\sum_p x_pe_pe_p^{\top}`$ and likewise for $`D_y`$,
 
@@ -427,22 +432,19 @@ Computed from Gilbert–Varshamov packings of permutation codes
 |---|---|---|---|---|---|
 | required $`\kappa`$ | 0.126 | 0.159 | 0.185 | 0.200 | **0.25** |
 
-Against this, Sudakov's minoration holds with $`C_S\le2.09`$: comparing the process on the
-packing set with independent $`\mathcal N(0,\epsilon^2/2)`$ variables through the
-Sudakov–Fernique inequality [Ver18, Thm 7.2.11], and using that the expected maximum of
-$`m\ge2`$ independent standard normals is at least $`0.677\sqrt{\log m}`$ (the minimum over
-$`m`$ is at $`m=2`$, where the ratio is $`1/\sqrt{\pi\log2}`$), gives
-$`\epsilon\sqrt{\log\mathrm{Pack}}\le2.09\,\mathbb E\sup X_T`$. Hence $`\kappa=8C_S^2\le35`$ for
-the constant-2 route of Theorem 4.1, and $`\kappa\le560`$ for the audited constant-8 form.
-Either way the requirement $`\kappa\ge1/4`$ is met with two orders of magnitude to spare. We
-record the requirement because it is real: at $`\kappa<1/4`$ the theorem would be
-contradicted by a published construction.
+Sudakov's minoration supplies a universal finite constant $`C_S`$; here and below we
+do not claim a numerical upper bound for it. The earlier value $`C_S\le2.09`$ relied on
+an unproved assertion about the minimum, over every integer $`m\ge2`$, of a Gaussian
+maximum ratio. Checking finitely many $`m`$ does not establish that assertion.
+The threshold and tightness results use only a universal constant, so they are unchanged.
+The permutation comparison remains a useful normalization check: any valid choice of
+$`\kappa`$ in Corollary 5.1 must obey the displayed lower requirement.
 
 ---
 
 ## 6. Tightness, address length, and the matching upper bound
 
-### 6.1 Tight at workspace of order N squared
+### 6.1 Tight at register dimension of order N squared
 
 **Proposition 6.1.** *The clean two-query permutation-synthesis algorithm of [DLM26] lies
 inside Definition 2.1 and attains the ceiling of Corollary 5.1 up to the constant factor
@@ -554,14 +556,14 @@ by a clean two-query circuit with*
 | workspace | $`O(N\log(1/\varepsilon))`$ qubits |
 | ordinary gates | $`\mathrm{poly}(N,1/\varepsilon)`$ |
 | half-diamond error, all reference-entangled inputs | at most $`\varepsilon`$ |
-| target-dependent advice, postselection | none |
+| extra target-dependent advice, postselection | none |
 
 *The construction restores its workspace to within the stated error, so it is clean; the
-realized map on the target register is within operator-norm distance $`3\varepsilon/4`$ of
+clean-output compression $`T_g`$ is within operator-norm distance $`3\varepsilon/4`$ of
 $`U`$; and the circuit is of the repeated-sign-word form $`T_g`$ of Definition 2.1, one
 $`\pm1`$ table serving both queries.*
 
-*Construction, condensed.* The full statement with all estimates is
+*Construction, condensed.* The full statement with all estimates is in Appendix A of the PDF and
 `notes/permutation-transport.md`; the ingredients are checked at small $`N`$ in
 `verify_koopman_transport.py`.
 
@@ -589,7 +591,7 @@ $`(a-b)(a-b)^{\top}\preceq2aa^{\top}+2bb^{\top}`$,
 
 This is a uniform operator bound, valid for every input. To make the mixture a single
 permutation, put $`\delta:=\varepsilon/2`$, take $`J`$ with $`e^2\le\delta^2/100`$, and add a
-uniform coherent label register over $`R\ge100M^2/\delta^2`$ copies, a power of two fixed by
+uniform coherent label register over $`R\ge100M^2/\delta^2`$ copies, the least power of two satisfying this bound, fixed by
 $`M`$ and $`\delta`$ alone and hence independent of the target, with integer multiplicities
 $`k_\ell\approx Rp_\ell`$, $`\sum_\ell|p_\ell-k_\ell/R|\le2m/R`$; set $`\Pi_U(j,a)=(j,\pi_{\ell(j)}(a))`$
 with the enlarged, still target-independent, encoding $`\tilde E\psi=|+_R\rangle\otimes E\psi`$.
@@ -630,15 +632,15 @@ count $`w^{\star}`$ and the oracle input length $`\ell^{\star}`$ satisfy*
 
 In the garbage model the workspace may end in a target-dependent state
 $`|j_g\rangle`$, independent of the input, or may simply be discarded. [LMW24] and [DLM26]
-state their one-query bounds there. This section prices, exactly, what a two-query bound in
-that model would require of the clean machinery.
+state their one-query bounds there. This section gives a sufficient route from an
+insertion-class capacity bound to a lower bound in that model.
 
 **Setting.** A $`t`$-query circuit
 $`V(g)=A_t(D_g\otimes I_k)A_{t-1}\cdots(D_g\otimes I_k)A_0`$ on $`\mathbb C^Q\otimes\mathbb C^k`$,
 where $`Q`$ is the number of addresses and $`k`$ the workspace dimension, restricted to the
 clean input, $`S_g:=V(g)\iota`$ with $`\iota\psi=\psi\otimes|0\rangle`$, is an isometry
 $`\mathbb C^N\to\mathbb C^Q\otimes\mathbb C^k\cong\mathbb C^N\otimes\mathbb C^D`$, with
-$`D=Qk/N`$ the junk dimension, whose entries are multilinear polynomials of degree $`t`$ in
+$`D=Qk/N`$ the junk dimension, whose entries are multilinear polynomials of degree at most $`t`$ in
 the signs. In the
 **keep form** $`S_g\psi=(U_g\psi)\otimes|j_g\rangle`$. The **discard form** only requires the
 induced channel to be within diamond distance $`\varepsilon`$ of $`U_g`$; since a unitary
@@ -656,22 +658,26 @@ depends only on the induced channel. If $`L`$ is junk-blind and linear then $`L\
 *Proof.* Take $`W=e^{i\theta}I`$: junk-blindness gives $`L(S)=L(e^{i\theta}S)=e^{i\theta}L(S)`$
 for all $`\theta`$; for a real-linear $`L`$ take $`\theta=\pi`$. $`\square`$
 
-The width-and-Sudakov machinery of Sections 4 and 5 prices a Gaussian process that is
-*linear* in the realized operator. By the lemma, no junk-blind linear functional of a
-garbage packet is nonzero; the invariants that factor through the channel are quadratic, the
-basic one being $`S_g^{*}(X\otimes I)S_g=U_g^{*}XU_g`$, of degree $`2t`$ in the signs. This is
-the exact sense in which cleanliness halves the degree, and it says what any junk-blind
-width argument, linear in the realized operator, for garbage-$`t`$ must be: a clean bound at
-$`2t`$ insertions.
+The lemma rules out a nonzero junk-blind linear functional of the packet itself.
+Conjugation provides a useful quadratic invariant with an explicit $`2t`$-insertion
+representation. This proves sufficiency of the transfer below, not necessity of
+oracle degree $`2t`$: substitution of an oracle circuit into an invariant can cause
+degree cancellations. For example, $`D_gD_g=I`$ is a two-query packet with constant
+conjugated observables. No lower bound on the degree of every possible invariant,
+or on every width method, is asserted.
 
-**Theorem 7.2 (conjugation transfer).** *Consider the $`2t`$-insertion class
-$`\lbrace Y_{2t}D_gY_{2t-1}\cdots D_gY_0:\|Y_i\|\le1\rbrace`$ with $`D_g=\sum_{j\le Q}g_jP_j`$ for
+**Theorem 7.2 (conjugation transfer).** *For every fixed compatible tuple of contractions
+$`(Y_0,\ldots,Y_{2t})`$, consider the $`N\times N`$ family
+$`\lbrace Y_{2t}D_gY_{2t-1}\cdots D_gY_0:g\in\{\pm1\}^Q\rbrace`$ with $`D_g=\sum_{j\le Q}g_jP_j`$ for
 mutually orthogonal projectors $`P_j`$ of arbitrary rank summing to the identity of a
-register of arbitrary dimension, as in Theorem 6.3. Suppose it satisfies a capacity bound
-$`\log\mathrm{Pack}_{\rho\sqrt N}\le C_\rho N\,\phi(Q)`$ for some function $`\phi`$ of the
-address count. Then no universal garbage-$`t`$ synthesizer exists with $`\phi(Q)=o(N)`$, for
+register of arbitrary dimension, as in Theorem 6.3. Suppose each such family satisfies a capacity bound
+$`\log\mathrm{Pack}_{\rho\sqrt N}\le C_\rho N\,\phi_N(Q)`$, uniformly over the fixed contractions,
+projectors and workspace dimension. Packing is over $`g`$ alone, not over these fixed
+architectural choices. Here $`\phi_N`$ is a rate function of the address count, allowed to
+depend on $`N`$ but not on workspace dimension.
+Then no universal garbage-$`t`$ synthesizer exists with $`\phi_N(Q)=o(N)`$, for
 every workspace and junk dimension, with no change to the oracle, at constant diamond
-error. At $`t=1`$, Theorem 6.3 gives $`\phi(Q)=\log(2QN)`$.*
+error sufficiently small. At $`t=1`$, Theorem 6.3 gives $`\phi_N(Q)=\log(2QN)`$.*
 
 *Proof.* Fix a balanced reflection $`R`$ ($`R=R^{*}`$, $`R^2=I`$, $`\mathrm{Tr}R=0`$) and
 set $`T_g:=S_g^{*}(R\otimes I)S_g`$. Because $`D_g\otimes I`$ is Hermitian, expanding
@@ -684,12 +690,20 @@ keep form $`T_g=\langle j_g|j_g\rangle\,U_g^{*}RU_g=U_g^{*}RU_g`$: the junk canc
 normalization of a unit vector, with no reference vector, no alignment and no dependence
 on the junk dimension. The map $`U\mapsto U^{*}RU`$ lands in the balanced reflections, a
 copy of the Grassmannian $`\mathrm{Gr}(N/2,N)`$ of real dimension $`N^2/2`$ on which every
-point has Frobenius norm $`\sqrt N`$; volume counting there gives, for $`\rho`$ below an absolute constant, a
-$`\rho\sqrt N`$-separated set of $`e^{c_\rho N^2}`$ points, each of the form $`U_i^{*}RU_i`$. A
+point has Frobenius norm $`\sqrt N`$. For Haar $`V`$, the real function
+$`f(V)=\mathrm{Tr}(RV^*RV)`$ has mean zero and Frobenius Lipschitz constant
+$`2\sqrt N`$. A ball of radius $`\rho\sqrt N`$ about $`R`$ is the event
+$`f(V)\ge N(1-\rho^2/2)`$. The same concentration inequality as in Corollary 5.2
+bounds its measure by $`\exp(-c_\rho N^2)`$ for fixed $`\rho<\sqrt2`$.
+Invariance and a maximal separated covering give at least $`e^{c_\rho N^2}`$
+orbit points, each $`U_i^*RU_i`$. A
 universal synthesizer must in particular synthesize $`U_1,\dots,U_m`$, so the single family
 $`\lbrace T_g\rbrace`$ contains an $`e^{c_\rho N^2}`$-point separated code, contradicting the
-assumed capacity bound when $`\phi(Q)=o(N)`$. The discard form costs an additional $`O(\sqrt\varepsilon)`$ in
-normalized Frobenius distance, absorbed by halving $`\rho`$. $`\square`$
+assumed capacity bound when $`\phi_N(Q)=o(N)`$. For the discard form no Stinespring
+continuity is needed: $`\|\Phi_g-\mathrm{Ad}_U\|_\diamond\le\varepsilon`$ implies
+$`\|\Phi_g^*(R)-U^*RU\|_{\mathrm{op}}\le\varepsilon`$ by channel duality.
+The normalized Frobenius error is at most $`\varepsilon`$; choose the service-error
+constant small relative to the packing scale. $`\square`$
 
 The reversal identity, the junk cancellation and the orbit properties are checked in
 `verify_conjugation_transfer.py`.
@@ -737,13 +751,15 @@ ancillas explicitly inside $`\log(2Q)`$, and, via Theorem 6.3, the oracle input 
 2. **Parallel versus adaptive.** [LMW24] rule out polynomially many *parallel* queries. The
    difficulty at $`t\ge3`$ is therefore entirely in interleaving.
 3. **One query.** [AK07, Thm 6.7] is stronger at $`t=1`$ in the exact model: $`4^N`$ with
-   address width $`2N`$, independent of $`Q`$. The address-width concept is theirs.
-4. **A remark on framing.** Quantum query algorithms are exactly the completely bounded
-   multilinear forms, by the Christensen–Sinclair factorization [ABP18]. In that language
-   a two-query architecture is a completely bounded bilinear map from the selector torus to
-   $`N\times N`$ matrices, Theorem 4.1 bounds the Gaussian mean width of its range uniformly
-   over such maps, and the $`k`$-query conjecture concerns the ranges of $`k`$-linear maps. We
-   record this as a reformulation, not a result.
+   at most $`2N`$ relevant table entries. This counts Boolean variables, not oracle
+   input bits. Banerjee [Ban25] sharpens the matrix count to $`2^N`$ under the
+   exact every-oracle-clean assumption.
+4. **Completely bounded forms.** [ABP18, Thm 1.3] characterizes scalar expected
+   outputs of $`t`$-query algorithms by completely bounded forms of degree $`2t`$.
+   Our matrix-valued amplitude packet is separately multilinear of degree $`t`$.
+   These are related factorizations, but the cited scalar theorem is not an
+   equivalence with the full matrix-valued unit ball. Such an identification is
+   not used or claimed here.
 
 **Consistency checks.** The bound does not forbid the trivial clean two-query lookup
 ($`w=\Theta(N^2)`$), is attained up to $`\log(1/\varepsilon)`$ by Theorem 6.4, and does not
@@ -755,9 +771,10 @@ error.
 
 ## 9. Reproducibility
 
-`verify/run_all.py` runs eight deterministic, numpy-only scripts, each exiting nonzero on any
-failed check: Theorem 4.1 in both forms (exact expansion, pointwise absorption over the whole
-cube and the torus, the closed-form variance operators against Monte Carlo and their
+`verify/run_all.py` runs nine deterministic scripts (standard library and numpy), each exiting nonzero on any
+failed check: Theorem 4.1 in both forms (exact expansion, exhaustive absorption on finite
+sign cubes and checks at sampled or alternating-maximization phase vectors,
+the closed-form variance operators against Monte Carlo and their
 domination), Proposition 2.2, Propositions 3.1 and 3.2, Proposition 5.3, Proposition 6.1, the
 factorization of Theorem 6.3, the ingredients of Theorem 6.4 at small $`N`$, and the
 identities of Section 7. `lean/` holds a kernel-checked formalization of the deterministic
@@ -805,6 +822,11 @@ for exactly what is and is not certified.
   SIAM J. Computing 35(4):787–803, 2006.
 - **[CW04]** M. Charikar, A. Wirth. *Maximizing quadratic programs: extending Grothendieck's
   inequality.* Proc. 45th IEEE Symposium on Foundations of Computer Science (FOCS 2004), 54–60.
+- **[Ban25]** A. Banerjee. *On Query Lower Bounds for Aaronson-Kuperberg Unitary
+  Synthesis Circuits.* Research report, 23 July 2025.
+  <https://www.scottaaronson.com/showcase5/synthesis.pdf>.
+- **[Hua25]** E. Huang. *A 1.5-Query Lower Bound for the Unitary Synthesis Problem.*
+  arXiv:2508.13215v2, 2025.
 - **[Bir46]** G. Birkhoff. *Tres observaciones sobre el algebra lineal.* Univ. Nac. Tucumán
   Rev. Ser. A 5, 1946.
 
@@ -812,9 +834,21 @@ for exactly what is and is not certified.
 
 ## Acknowledgements and disclosure
 
-Parts of this work were developed with AI assistance for exploration, drafting and
-verification. Every proof was re-derived by the author and is machine-checked by the
-included scripts; the audit status of each claim is recorded in `STATUS.md`.
+**Use of language models.** Large language models were used extensively throughout this
+work for proof discovery, implementation, verification engineering, adversarial auditing,
+and editorial assistance. The workflow used separate, independently instantiated sessions,
+including fresh-context auditing sessions instructed to refute rather than confirm.
+The author directed the research program, set the verification standards, made the
+promotion, correction, and publication decisions, and assumes sole responsibility for
+this work. These AI audits are not external peer review.
+
+The proofs are analytic, model-assisted arguments; exact computation and repeated audits
+do not by themselves validate their analytic dependencies. The scripts check specified
+identities and finite instances, using exact rational arithmetic for designated controls
+and floating-point calculations elsewhere; numerical searches do not certify global
+optima. The Lean kernel checks seven selected declarations, including conditional
+assembly results whose analytic inputs remain explicit hypotheses. The complete width,
+packing, address-compression, and transport proofs are not formalized in Lean.
 
 ## License
 

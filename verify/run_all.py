@@ -14,13 +14,16 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 SUITE = [
+    ("verify_exact_controls.py",
+     "Exact rational controls: three-insertion pair; cancellation negative control; "
+     "non-scalar N=2 transport and two Boolean lookups"),
     ("verify_proof_steps.py",
      "Corollary 4.2, audited real-selector form: exact expansion, pointwise absorption over "
      "the whole sign cube, Schur domination; Proposition 2.2 (isometric case); "
      "zero-leverage lemma (Remark 4.4); Remark 4.3 (one-sided weightings fail)"),
     ("verify_complex_phase.py",
      "Theorem 4.1, unimodular-selector form: expansion, torus absorption (random points and "
-     "the alternating-maximisation supremum), closed-form variance operators vs Monte Carlo "
+     "candidate local optima from alternating maximisation), closed-form variance operators vs Monte Carlo "
      "and their domination; Proposition 2.2 (three-term identity, contractive C and W)"),
     ("verify_permutation_family.py",
      "Proposition 6.1 -- the Dong-Lombardi-Ma permutation family lies in the class and "

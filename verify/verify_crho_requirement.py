@@ -15,6 +15,7 @@ If K < that maximum, the theorem is FALSE -- refuted by a published construction
 """
 import math
 import sys
+from functools import lru_cache
 
 fails = []
 
@@ -27,12 +28,26 @@ def check(name, ok, detail=""):
 
 results = {}
 
+@lru_cache(maxsize=65537)
 def log_factorial(n):
     return math.lgamma(n + 1)
 
+_log_derangements = [0.0, -math.inf]  # !0 = 1 and !1 = 0
+
+
 def log_derangement(n):
-    # !n = round(n!/e); log form
-    return log_factorial(n) - 1.0 if n >= 1 else 0.0
+    """Evaluate !n=(n-1)(!(n-1)+!(n-2)) in log space, not n!/e.
+
+    The recurrence is exact; its floating-point evaluation is not an interval
+    certificate. In particular, the impossible one-point derangement has zero
+    weight rather than the spurious 1/e used by the former approximation.
+    """
+    while len(_log_derangements) <= n:
+        j = len(_log_derangements)
+        a, b = _log_derangements[-1], _log_derangements[-2]
+        hi, lo = max(a, b), min(a, b)
+        _log_derangements.append(math.log(j - 1) + hi + math.log1p(math.exp(lo - hi)))
+    return _log_derangements[n]
 
 def log_ball(d, r):
     """log |{pi : hamming_dist(pi, id) <= r}|  = log sum_{k>=d-r} C(d,k) * !(d-k)
@@ -49,16 +64,21 @@ def log_ball(d, r):
     return m + math.log(sum(math.exp(t - m) for t in terms))
 
 def log_pack_permutations(d, alpha):
-    """Rigorous lower bound on the size of a permutation code with minimum
+    """Numerical evaluation of the exact GV lower-bound expression for a code with minimum
        Hamming distance D = alpha*d, via greedy deletion:
            M >= d! / |ball of radius D-1|      (Gilbert-Varshamov)
-       Returns natural log."""
+       Returns natural log; floating-point values are not certified enclosures."""
     D = max(1, int(math.ceil(alpha * d)))
     lb = log_ball(d, D - 1)
     return log_factorial(d) - lb
 
 print(__doc__.strip())
 print()
+check("!0=1, !1=0, !2=1, !3=2, !4=9",
+      all(abs(math.exp(log_derangement(n)) - value) < 1e-12
+          for n, value in enumerate([1, 0, 1, 2, 9])))
+check("exact small deletion ball: d=4, radius=2 has 7 permutations",
+      abs(math.exp(log_ball(4, 2)) - 7) < 1e-12)
 
 CONVENTIONS = {
     "Q = 2d^2  (address count, per the DLM packet reconstruction)": lambda d: 2*d*d,
@@ -122,40 +142,10 @@ seq = [results[main][d] for d in sorted(results[main])]
 check("required kappa increases with d and stays below the asymptotic 1/4",
       all(a < b for a, b in zip(seq, seq[1:])) and seq[-1] < 0.25)
 
-# The Sudakov constant, bounded through the Sudakov-Fernique comparison with independent
-# N(0, eps^2/2) variables:  E sup X  >=  (eps/sqrt 2) * E max_m g_i,  and
-# E max of m standard normals  =  int x * m * phi(x) * Phi(x)^(m-1) dx  >=  0.677 sqrt(log m)
-# for every m >= 2 (the minimum of the ratio is at m = 2).  Hence eps sqrt(log m) <= C_S E sup
-# with  C_S = sqrt(2) / 0.677 = 2.09.
 
-
-def sudakov_fernique_ratio(m, n=400000, x_max=12.0):
-    xs = [-x_max + 2 * x_max * (i + 0.5) / n for i in range(n)]
-    h = 2 * x_max / n
-    tot = 0.0
-    for x in xs:
-        ph = math.exp(-0.5 * x * x) / math.sqrt(2 * math.pi)
-        Ph = 0.5 * (1.0 + math.erf(x / math.sqrt(2)))
-        tot += x * m * ph * Ph ** (m - 1) * h
-    return tot / math.sqrt(math.log(m))
-
-
-ratios = {m: sudakov_fernique_ratio(m, n=60000) for m in (2, 3, 4, 8, 16, 64, 256)}
-min_ratio = min(ratios.values())
-print("  E max_m / sqrt(log m):", ", ".join(f"m={m}: {r:.4f}" for m, r in ratios.items()))
-check("E max of m standard normals >= 0.677 sqrt(log m), minimum at m = 2 (= 1/sqrt(pi log 2))",
-      min_ratio >= 0.677 and abs(ratios[2] - 1 / math.sqrt(math.pi * math.log(2))) < 1e-3,
-      f"min ratio {min_ratio:.4f}")
-C_S = math.sqrt(2) / min_ratio
-K_thm41 = 2 * C_S ** 2 * 2 ** 2
-K_audited = 2 * C_S ** 2 * 8 ** 2
-print(f"  C_S <= {C_S:.3f};  kappa = 2 C_S^2 C1^2 = {K_thm41:.1f} (C1 = 2, Theorem 4.1), "
-      f"{K_audited:.0f} (C1 = 8, audited form)")
-check("C_S <= 2.09 and kappa <= 35 for the constant-2 route", C_S <= 2.09 and K_thm41 <= 35.0)
-check("both instantiations exceed the required kappa (no contradiction with the DLM family)",
-      K_thm41 >= worst_K and K_audited >= worst_K,
-      f"required {max(results[main].values()):.4f} (finite d), 0.25 (asymptotic)")
-
+# No finite list of quadratures establishes a universal Sudakov constant.
+# The paper uses the standard theorem with an unspecified absolute constant.
+print("INFO: no numerical upper bound on the universal Sudakov constant is certified")
 print("-" * 78)
 if fails:
     print("verify_crho_requirement.py: FAIL -> " + ", ".join(fails))

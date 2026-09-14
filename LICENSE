@@ -2,7 +2,7 @@ Creative Commons Attribution 4.0 International (CC BY 4.0)
 
 Copyright (c) 2026 Seth Douglas
 
-This work — the text of `paper.md`, `README.md`, and the accompanying prose
+This work — `paper/paper.tex`, `paper/paper.md`, `paper/paper.pdf`, `README.md`, and the accompanying prose
 documentation — is licensed under the Creative Commons Attribution 4.0
 International License.
 
@@ -31,5 +31,5 @@ A human-readable summary is at:
 
   https://creativecommons.org/licenses/by/4.0/
 
-Source code in this repository (the contents of `verify/` and `experiments/`)
+Source code in this repository (including `verify/`, `tools/`, and `lean/`)
 is licensed separately under the MIT License; see LICENSE-CODE.

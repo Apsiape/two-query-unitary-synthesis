@@ -177,8 +177,9 @@ $`(a-b)(a-b)^{\top}\preceq2aa^{\top}+2bb^{\top}`$,
 Converting to the normalized complex coordinates $`w`$ gives
 $`\mathbb E\,(w_\beta-Uw_\alpha)(w_\beta-Uw_\alpha)^{*}\preceq(4e^2/s^2)I_N`$. At output coordinate
 $`b=\pi(a)`$ the entry of $`\Delta_\pi\psi`$ is $`(w_a^{*}\psi-w_b^{*}U\psi)/\sqrt M`$;
-averaging its squared magnitude over the coupling is exactly the quadratic form just
-bounded. $`\square`$
+averaging its squared magnitude gives the quadratic form of
+$`U^{*}\mathbb E[(w_\beta-Uw_\alpha)(w_\beta-Uw_\alpha)^{*}]U`$.
+Unitary conjugation preserves the preceding scalar identity bound. $`\square`$
 
 Equation (1) is an operator bound, valid for every input at once, not an average-case
 statement. No measurement of the input has entered. Check (3) of the verifier estimates the
@@ -257,7 +258,7 @@ Definition 2.1 with $`B,W,C`$ independent of $`U`$.
 
 **Total error.** (2), the encoder error and the decoder error give isometry error at most
 $`\delta+2(\varepsilon/8)=3\varepsilon/4`$; compressing to the target register is a
-contraction, so the realized map on the target register is within operator-norm distance
+contraction, so the clean-output compression is within operator-norm distance
 $`3\varepsilon/4`$ of $`U`$ as well. Two isometries at operator distance $`\gamma`$ induce
 channels at half-diamond distance at most $`\gamma`$: tensoring with a reference preserves
 the operator bound, the trace distance of the resulting pure states is at most their vector
@@ -299,8 +300,8 @@ The bound makes no computational assumption on the encodings and already permits
 continuous target-dependent phases. At $`\varepsilon=0.01`$ it is about $`6.64(N-1)`$
 encoded qubits. The mechanism is transparent: a permutation can only rearrange the finite
 collection of row directions the encoding supplies, and reproducing every rotation while
-returning to a fixed output encoding needs that collection to contain directions
-exponentially close to every rotated row.
+returning to a fixed output encoding needs exponentially many directions at the
+prescribed error-dependent angular resolution.
 
 ---
 

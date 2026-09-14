@@ -1,0 +1,16 @@
+{
+  "title": "The Clean Two-Query Threshold for Unitary Synthesis",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "creators": [{"name": "Douglas, Seth"}],
+  "publication_date": "2026-09-13",
+  "version": "1.0.4",
+  "access_right": "open",
+  "license": "cc-by-4.0",
+  "description": "<p>We establish matching fixed-error resource thresholds for clean two-query unitary synthesis. For a fixed two-query architecture with arbitrary contractions and independent unimodular phase selectors, the Gaussian mean width is at most 2 min(N,Q) sqrt(log(2Q)). Universal clean synthesis of n-qubit unitaries therefore requires Omega(2^n) qubits and, by address compression, Omega(2^n) Boolean oracle input bits independently of workspace. A permutation-transport construction attains O(2^n log(1/epsilon)) qubits and address bits using two Boolean queries to one table.</p><p>The paper includes complete proof appendices and a sufficient conjugation transfer for the garbage model. It does not resolve unrestricted two-query synthesis with garbage or the full Aaronson-Kuperberg problem. Finite verification scripts and scoped Lean 4 checks accompany the paper; the complete analytic proof is not formalized. The fresh-context AI audit is not external peer review.</p>",
+  "keywords": ["quantum query complexity", "unitary synthesis", "Aaronson-Kuperberg problem", "Gaussian mean width", "matrix concentration"],
+  "related_identifiers": [
+    {"identifier": "https://github.com/Apsiape/two-query-unitary-synthesis", "relation": "isSupplementedBy", "resource_type": "software"}
+  ],
+  "notes": "Deposit the manuscript PDF and the self-contained LaTeX source archive under CC BY 4.0. Verification code is separately available in the accompanying repository under MIT. No DOI has been assigned in this local metadata template."
+}

@@ -8,6 +8,8 @@ successfully.
 'TwoQuery.Q2.two_re_quadratic' depends on axioms: [propext, Classical.choice, Quot.sound]
 'TwoQuery.Q2.cube_norm_const' depends on axioms: [propext, Classical.choice, Quot.sound]
 'TwoQuery.Q2.width_of_khintchine' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TwoQuery.Q2.torus_norm_const' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TwoQuery.Q2.asymmetric_width_assembly' depends on axioms: [propext, Classical.choice, Quot.sound]
 
 No `sorryAx`, no custom axiom. Rerun the command above to regenerate this file; any
-difference from the five lines above is a regression.
+unexpected dependency outside the three standard axioms is a regression.

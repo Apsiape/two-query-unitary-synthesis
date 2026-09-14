@@ -1,10 +1,8 @@
 # Garbage-Model Bounds From Clean-Model Ones
 
-*Companion to Section 7 of `paper/paper.md`. Why an unrestricted garbage-model
-$`t`$-query bound is a clean $`2t`$-insertion problem, why nothing below degree $`2t`$ can
-work for the family of methods used here, and exactly what is and is not claimed at
-$`t=2`$. Identities are checked in `verify/verify_conjugation_transfer.py`; see `STATUS.md`
-for audit status.*
+*Companion to Section 7 of the paper. A sufficient conjugation transfer from
+a clean insertion-class capacity bound to a garbage-model lower bound. No
+minimal-degree or optimal-transfer theorem is asserted.*
 
 ---
 
@@ -62,7 +60,10 @@ $`s`$-insertion class
 \mathcal P_s=\bigl\lbrace\,g\mapsto Y_sD_gY_{s-1}\cdots D_gY_0:\ \|Y_i\|_{\mathrm{op}}\le1\,\bigr\rbrace ,
 ```
 
-arbitrary contractions in every slot, rectangular allowed, and bound its packing entropy at
+arbitrary contractions in every slot, rectangular allowed. Each member is an architecture
+with the contractions and address projectors fixed; its output family varies over $`g`$
+alone. Capacity bounds are uniform over architectures, not bounds on the union of their
+outputs. We bound each output family's packing entropy at
 the normalized Frobenius scale $`\rho\sqrt N`$. The sign word acts through address projectors
 of arbitrary rank, $`D_g=\sum_{j\le Q}g_jP_j`$ on a register of arbitrary dimension, as in
 Theorem 6.3 of the paper, so that a bound is stated in terms of the address count $`Q`$ and
@@ -74,15 +75,17 @@ not of the register dimension. The proved $`s=2`$ case is Theorem 6.3 of the pap
 ```
 
 A **clean-$`s`$ capacity theorem** means a statement of the shape
-$`\log\mathrm{Pack}_{\rho\sqrt N}\le C_\rho N\phi(Q)`$ for $`\mathcal P_s`$, with $`\phi`$ a
-function of the address count.
+$`\log\mathrm{Pack}_{\rho\sqrt N}\le C_\rho N\phi_N(Q)`$ for each architecture in $`\mathcal P_s`$,
+where $`\phi_N`$ may depend on target dimension and address count but not workspace,
+with constants uniform over the fixed contractions,
+address projectors and workspace dimension.
 Since $`D_g`$ is linear in $`g`$ and $`g_p^2=1`$, every entry of a member of $`\mathcal P_s`$
 is a multilinear polynomial of degree at most $`s`$ in the signs: a $`t`$-query architecture
 produces a degree-$`t`$ object, and clean-$`s`$ tools are degree-$`s`$ tools.
 
 ---
 
-## 2. Cleanliness halves the degree
+## 2. A quadratic observable removes the junk
 
 In the clean model the invariant one studies is obtained by contracting the ancilla against
 a fixed bra: $`(I_N\otimes\langle0|)S_g=U_g`$, linear in $`S_g`$, degree $`t`$. In the garbage
@@ -104,21 +107,20 @@ linear, then $`L\equiv0`$.*
 *Proof.* Take $`W=e^{i\theta}I`$: junk-blindness gives $`L(S)=L(e^{i\theta}S)=e^{i\theta}L(S)`$
 for every $`\theta`$. For a real-linear $`L`$ take $`\theta=\pi`$. $`\square`$
 
-**Consequence.** The width-and-Sudakov machinery of the paper prices a Gaussian process
-*linear* in the realized operator. By the lemma no junk-blind linear functional of a garbage
-packet is nonzero; the invariants that factor through the channel are quadratic, the basic
-one being (2.1), of degree $`2t`$. Hence no
-junk-blind width argument can attack garbage-$`t`$ below degree $`2t`$. In particular there
-is no route from the degree-2 theorem straight to an unrestricted garbage-2 bound by any
-argument of this type. The only way to stay at degree $`t`$ is to break junk-blindness by
-fixing a reference vector in the junk register, which is what Section 5 does, at a price.
+The lemma rules out a nonzero junk-blind linear functional of the packet itself.
+Conjugation provides a useful quadratic invariant with an explicit $`2t`$-insertion
+representation. This proves sufficiency of the transfer below, not necessity of
+oracle degree $`2t`$: substitution of an oracle circuit into an invariant can cause
+degree cancellations. For example, $`D_gD_g=I`$ is a two-query packet with constant
+conjugated observables. No lower bound on the degree of every possible invariant,
+or on every width method, is asserted.
 
 ---
 
 ## 3. The conjugation transfer
 
 **Theorem 3.1 (Theorem 7.2 of the paper).** *A clean-$`2t`$ capacity theorem with rate
-$`\phi`$ implies that no universal garbage-$`t`$ synthesizer exists with $`\phi(Q)=o(N)`$. The
+$`\phi_N`$ implies that no universal garbage-$`t`$ synthesizer exists with $`\phi_N(Q)=o(N)`$. The
 transfer depends on no workspace or junk dimension, changes no oracle, and tolerates a
 constant diamond error. At $`t=2`$ the target is clean-4.*
 
@@ -148,17 +150,20 @@ $`Y_g=(D_g\otimes I)A_{t-1}\cdots(D_g\otimes I)A_0\iota`$.
 $`T_g=\langle j_g|j_g\rangle U_g^{*}XU_g=U_g^{*}XU_g`$: no reference vector, no alignment, no
 dependence on $`D`$. In the discard form, (1.1) gives
 $`\|T_g-U_g^{*}XU_g\|_F\le2\sqrt N\|X\|\,c\sqrt\varepsilon`$, a constant budget at the
-normalized Frobenius scale, absorbed by halving $`\rho`$.
+normalized Frobenius scale. More directly, channel duality gives
+$`\|T_g-U_g^{*}XU_g\|_{\mathrm{op}}\le\varepsilon\|X\|`$ at unhalved
+diamond error $`\varepsilon`$, so this transfer does not require (1.1).
 
 **(d) The conjugation orbit has full packing entropy.** Take $`X=R`$ a balanced reflection
 ($`R=R^{*}`$, $`R^2=I`$, $`\mathrm{Tr}R=0`$). Then $`U\mapsto U^{*}RU`$ maps onto the balanced
 reflections, a copy of the Grassmannian $`\mathrm{Gr}(N/2,N)`$ of real dimension $`N^2/2`$,
-every image point having Frobenius norm $`\sqrt N`$. Volume counting there gives, for
+every image point having Frobenius norm $`\sqrt N`$. The explicit concentration-and-covering
+argument in paper Section 7 gives, for
 $`\rho`$ below an absolute constant, a $`\rho\sqrt N`$-separated set of $`e^{c_\rho N^2}`$
 points, each of the form $`U_i^{*}RU_i`$. A universal garbage-$`t`$ synthesizer must
-synthesize $`U_1,\dots,U_m`$, so the single family $`\lbrace T_g\rbrace\subset\mathcal P_{2t}`$
+synthesize $`U_1,\dots,U_m`$, so the output family $`\lbrace T_g\rbrace`$ of a member of $`\mathcal P_{2t}`$
 contains an $`e^{c_\rho N^2}`$-point separated code, while a clean-$`2t`$ capacity theorem
-caps the same quantity by $`C_\rho N\phi(Q)=o(N^2)`$ when $`\phi(Q)=o(N)`$. $`\square`$
+caps the same quantity by $`C_\rho N\phi_N(Q)=o(N^2)`$ when $`\phi_N(Q)=o(N)`$. $`\square`$
 
 **Remarks.**
 
@@ -194,29 +199,15 @@ the paper claims nothing about it.
 
 ---
 
-## 5. Exactness of the clean-4 location
+## 5. Scope of the transfer
 
-"Strength" is operational: what must be proved to obtain the impossibility.
+A clean four-insertion capacity bound suffices for a two-query garbage-model
+lower bound. The linear-invariant lemma does not establish that four is necessary,
+even within a broadly described family of width methods. We therefore do not claim
+optimality of this route or an equivalence between the two problems.
 
-- **Clean-4 suffices** (Theorem 3.1 at $`t=2`$): a capacity theorem for $`\mathcal P_4`$
-  yields the unrestricted garbage-2 impossibility, for every junk dimension, with no oracle
-  augmentation, at constant diamond error.
-- **Nothing below degree 4 can suffice, for this family of methods** (Lemma 2.1): every
-  junk-blind invariant of a garbage-2 family is at least quadratic in the packet, so no
-  junk-blind linear-process argument operates below degree 4.
-
-**The honest boundary.** The second statement concerns a method class and is proved as
-such; it is not an unconditional converse. Unconditionally, only the trivial containment
-holds: a clean algorithm is a garbage algorithm with $`|j_g\rangle=|0\rangle`$, so a garbage-2
-impossibility implies the clean-2 one. Unrestricted garbage-2 therefore sits between clean-2
-and clean-4 in strength, and the junk-blindness lemma closes the interval at the clean-4
-end for every method used here. It is not claimed that a garbage-2 bound would imply a
-clean-4 bound.
-
-**Comparison with erasure.** A different transfer, which appends a circuit querying a
-modified oracle, turns garbage-$`t`$ into clean-$`(t+4)`$. Best transfer depth is therefore
-$`\min(2t,t+4)`$: conjugation wins for $`t\le3`$, the two tie at $`t=4`$, and erasure wins
-beyond. Only conjugation is used in this repository.
+Other garbage-removal compilers require their own oracle, accuracy and workspace
+accounting. No unproved comparison with such a compiler is needed here.
 
 ---
 

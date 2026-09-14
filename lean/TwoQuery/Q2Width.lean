@@ -43,7 +43,14 @@ WHAT IS FORMALISED, AND WHAT IS NOT
 
 STATUS: no `sorry`, no custom axioms.
 -/
-import Mathlib
+import Mathlib.LinearAlgebra.Matrix.Trace
+import Mathlib.LinearAlgebra.Matrix.ConjTranspose
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Push
 
 namespace TwoQuery.Q2
 
@@ -187,5 +194,24 @@ theorem width_of_khintchine
   have h2 : (2 * (min N Q : ℝ)) * (4 * Real.sqrt (Real.log (2 * Q)))
       = 8 * (min N Q : ℝ) * Real.sqrt (Real.log (2 * Q)) := by ring
   linarith [hAbs, h1, h2.le, h2.ge]
+
+/-- The independent unimodular selector has a constant leverage-weighted norm.
+    No concentration or operator-norm inequality is imported into this identity. -/
+theorem torus_norm_const {ι : Type*} [Fintype ι]
+    (d : ι → ℝ) (x : ι → ℂ) (hx : ∀ p, Complex.normSq (x p) = 1) :
+    ∑ p, d p * Complex.normSq (x p) = ∑ p, d p := by
+  simp only [hx, mul_one]
+
+/-- Scalar assembly for the asymmetric route. The pointwise absorption and
+    Gaussian estimate remain explicit hypotheses, not formalized conclusions. -/
+theorem asymmetric_width_assembly (w left right EK h : ℝ)
+    (hl : 0 ≤ left) (hr : 0 ≤ right)
+    (hAbs : w ≤ left * right * EK) (hKh : EK ≤ 2 * h) :
+    w ≤ 2 * left * right * h := by
+  have hp : 0 ≤ left * right := mul_nonneg hl hr
+  calc
+    w ≤ left * right * EK := hAbs
+    _ ≤ left * right * (2 * h) := mul_le_mul_of_nonneg_left hKh hp
+    _ = 2 * left * right * h := by ring
 
 end TwoQuery.Q2

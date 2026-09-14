@@ -13,7 +13,7 @@ Checks (all deterministic, seed fixed):
      M independent of x and y -- for arbitrary complex x, y;
  (b) pointwise absorption  |x^T M y| <= ||B||_F ||C||_F ||K||_op  for unimodular x, y,
      where K = Lam^{-1/2} M Mu^{-1/2} (zero-leverage coordinates dropped); tested on random
-     torus points AND at the torus supremum found by alternating maximisation;
+     torus points AND at candidate local optima found by alternating maximisation;
  (c) the two variance operators of the matrix Gaussian series K have the closed forms
         E K K^* = Lam^{-1/2} [ conj(B^* B) o (W P_mu W^*) ] Lam^{-1/2},
         E K^* K = Mu^{-1/2}  [ conj(C C^*) o (W^* P_lam W) ] Mu^{-1/2},
@@ -160,7 +160,7 @@ for trial in range(trials):
 
 check("(a) exact expansion Tr(G^* T_{x,y}) = x^T M y, complex x,y",
       max_expansion_dev < 1e-9, f"max deviation {max_expansion_dev:.2e}")
-check("(b) pointwise absorption at the torus supremum (alternating maximisation)",
+check("(b) pointwise absorption at candidate local optima (alternating maximisation)",
       sup_violations == 0, f"0 violations expected, worst sup/bound {worst_sup_ratio:.4f}")
 check("(b) pointwise absorption |x^T M y| <= ||B||_F ||C||_F ||K|| on the torus",
       absorption_violations == 0,

@@ -19,3 +19,7 @@ paper/*.synctex.gz
 .idea/
 .DS_Store
 Thumbs.db
+
+# Locally generated submission bundle, build logs, and PDF-render inspection images
+release/
+tmp/

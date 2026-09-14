@@ -6,7 +6,7 @@ constant 8).
 
 ## What is certified
 
-Five theorems in `TwoQuery/Q2Width.lean`, namespace `TwoQuery.Q2`:
+Seven declarations in `TwoQuery/Q2Width.lean`, namespace `TwoQuery.Q2`:
 
 | theorem | content |
 |---|---|
@@ -15,6 +15,8 @@ Five theorems in `TwoQuery/Q2Width.lean`, namespace `TwoQuery.Q2`:
 | `two_re_quadratic` | $`2\,\mathrm{Re}(g^{\top}Mg)=g^{\top}(M+M^{*})g`$ for real $`g`$ |
 | `cube_norm_const` | $`\|D^{1/2}g\|^2=\mathrm{Tr}D`$ for every $`g\in\lbrace\pm1\rbrace^Q`$: the weighted selector norm is constant on the cube |
 | `width_of_khintchine` | assembly: trace budget + pointwise absorption + Khintchine bound ⇒ $`w\le8\min(N,Q)\sqrt{\log 2Q}`$ |
+| `torus_norm_const` | independent unimodular selectors have constant leverage-weighted squared norm |
+| `asymmetric_width_assembly` | scalar assembly for the asymmetric route, conditional on absorption and concentration |
 
 `cube_norm_const` is the conceptual heart. It is why the supremum over $`2^Q`$ sign words
 costs nothing, hence why the proof needs no chaining and never exchanges a supremum with
@@ -33,10 +35,9 @@ Mathlib has no matrix concentration inequality; formalizing Tropp's bound is a s
 project. A hypothesis is visible in the theorem's type and leaves `#print axioms` clean,
 which is the discipline followed here: nothing unproved is hidden.
 
-The unimodular-selector route of the paper's Theorem 4.1 (constant 2, complex phases,
-two tables) is **not** formalized. Its one step that differs from the symmetric route is
-the torus analogue of `cube_norm_const`, namely that
-$`\sum_p\lambda_p|x_p|^2=\|B\|_F^2`$ is constant for $`|x_p|=1`$.
+The complete unimodular-selector route of Theorem 4.1 (constant 2, complex phases,
+two tables) is **not** formalized. Version 1.0.3 adds its constant-norm identity and
+conditional scalar assembly, not the Schur variance or matrix-concentration proof.
 
 ## Reproduce
 
@@ -45,7 +46,7 @@ lake build
 lake env lean axiom_check.lean
 ```
 
-Every line must read `depends on axioms: [propext, Classical.choice, Quot.sound]`. The
+Every axiom list must be a subset of `[propext, Classical.choice, Quot.sound]`. The
 recorded output is in `RECORDED-AXIOMS.txt`. Toolchain: `leanprover/lean4:v4.30.0`
 (`lean-toolchain`); Mathlib `v4.30.0` (`lakefile.toml`, `lake-manifest.json`). A first
 build fetches the Mathlib cache, which is several gigabytes. `.lake/` is build output and is
